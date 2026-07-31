@@ -17,6 +17,7 @@ contract DraftPayContestTest is TestBase {
     address internal constant BUILDER_ONE = address(0xB001);
     address internal constant BUILDER_TWO = address(0xB002);
     address internal constant BUILDER_THREE = address(0xB003);
+    address internal constant BUILDER_FOUR = address(0xB004);
     address internal constant STRANGER = address(0xBAD);
 
     MockUSDC internal usdc;
@@ -320,6 +321,81 @@ contract DraftPayContestTest is TestBase {
         vm.prank(CLIENT);
         contest.settleNoWinner();
         _assertTerminalConservation(contest, fuzzPrize);
+    }
+
+    function testFourthQualifiedSubmissionDoesNotRevert() public {
+        DraftPayContest contest = _createAndFund(PRIZE);
+        uint256 one = _submit(contest, BUILDER_ONE, "one");
+        uint256 two = _submit(contest, BUILDER_TWO, "two");
+        uint256 three = _submit(contest, BUILDER_THREE, "three");
+        uint256 four = _submit(contest, BUILDER_FOUR, "four");
+        _openEvaluation(contest);
+        _evaluate(contest, one, true);
+        _evaluate(contest, two, true);
+        _evaluate(contest, three, true);
+        _evaluate(contest, four, true);
+
+        assertEq(contest.qualifiedCount(), 3, "finalist set stays bounded at three");
+        assertEq(contest.qualifiedBeyondCap(), 1, "fourth qualified entry is recorded");
+        assertTrue(contest.getSubmission(four).evaluated, "fourth entry was evaluated");
+        assertTrue(contest.getSubmission(four).qualified, "fourth entry is honestly qualified");
+        assertTrue(
+            !contest.getSubmission(four).finalistEligible, "fourth entry cannot take a payout slot"
+        );
+    }
+
+    function testBeyondCapSubmissionCannotBeRankedOrSelected() public {
+        DraftPayContest contest = _createAndFund(PRIZE);
+        uint256 one = _submit(contest, BUILDER_ONE, "one");
+        uint256 two = _submit(contest, BUILDER_TWO, "two");
+        uint256 three = _submit(contest, BUILDER_THREE, "three");
+        uint256 four = _submit(contest, BUILDER_FOUR, "four");
+        _openEvaluation(contest);
+        _evaluate(contest, one, true);
+        _evaluate(contest, two, true);
+        _evaluate(contest, three, true);
+        _evaluate(contest, four, true);
+
+        uint256[] memory ordered = new uint256[](3);
+        ordered[0] = four;
+        ordered[1] = two;
+        ordered[2] = three;
+        vm.prank(EVALUATOR);
+        vm.expectRevert(DraftPayContest.InvalidRanking.selector);
+        contest.rankFinalists(ordered, keccak256("beyond cap"));
+
+        ordered[0] = one;
+        vm.prank(EVALUATOR);
+        contest.rankFinalists(ordered, keccak256("valid rank"));
+        vm.prank(CLIENT);
+        vm.expectRevert(abi.encodeWithSelector(DraftPayContest.InvalidWinner.selector, four));
+        contest.selectWinner(four);
+    }
+
+    function testFourQualifiedSubmissionsStillConserveThePrize() public {
+        DraftPayContest contest = _createAndFund(PRIZE);
+        uint256 one = _submit(contest, BUILDER_ONE, "one");
+        uint256 two = _submit(contest, BUILDER_TWO, "two");
+        uint256 three = _submit(contest, BUILDER_THREE, "three");
+        uint256 four = _submit(contest, BUILDER_FOUR, "four");
+        _openEvaluation(contest);
+        _evaluate(contest, one, true);
+        _evaluate(contest, two, true);
+        _evaluate(contest, three, true);
+        _evaluate(contest, four, true);
+
+        uint256[] memory ordered = new uint256[](3);
+        ordered[0] = one;
+        ordered[1] = two;
+        ordered[2] = three;
+        vm.prank(EVALUATOR);
+        contest.rankFinalists(ordered, keccak256("rank capped"));
+        vm.prank(CLIENT);
+        contest.selectWinner(one);
+
+        assertEq(usdc.balanceOf(BUILDER_ONE), 95 * ONE_USDC, "winner takes 95");
+        assertEq(usdc.balanceOf(BUILDER_FOUR), 0, "beyond-cap builder is not paid");
+        _assertTerminalConservation(contest, PRIZE);
     }
 
     function _rankThree(uint256 prize)

@@ -8,6 +8,9 @@ import { SafeTransferLib } from "./libraries/SafeTransferLib.sol";
 /// @notice Arc Testnet hackathon escrow for one landing-page build contest.
 /// @dev This unaudited MVP borrows ERC-8183 lifecycle semantics but adds DraftPay-specific
 ///      multi-submission qualification, ranking, client choice, and no-winner settlement.
+/// @dev Any number of submissions may be evaluated and qualified. Only the first MAX_FINALISTS
+///      qualified submissions are payout-eligible, which keeps the settlement loop bounded
+///      without forcing the evaluator to reject valid work to avoid a revert.
 contract DraftPayContest {
     using SafeTransferLib for IERC20;
 
@@ -37,6 +40,9 @@ contract DraftPayContest {
         string metadataURI;
         bool evaluated;
         bool qualified;
+        /// @dev True only for the first MAX_FINALISTS qualified submissions. Later qualified
+        ///      work is still recorded as qualified, but cannot enter the bounded payout set.
+        bool finalistEligible;
         uint8 rank;
     }
 
@@ -60,7 +66,6 @@ contract DraftPayContest {
     error MetadataTooLarge();
     error InvalidSubmission(uint256 submissionId);
     error AlreadyEvaluated(uint256 submissionId);
-    error TooManyQualifiedSubmissions();
     error InvalidRanking();
     error InvalidWinner(uint256 submissionId);
     error QualifiedSubmissionsExist();
@@ -87,6 +92,8 @@ contract DraftPayContest {
     event SubmissionQualified(
         uint256 indexed submissionId, address indexed builder, bytes32 evaluationHash
     );
+    /// @notice Emitted when work passes evaluation after the finalist set is already full.
+    event QualifiedBeyondFinalistCap(uint256 indexed submissionId, address indexed builder);
     event SubmissionRejected(
         uint256 indexed submissionId, address indexed builder, bytes32 evaluationHash
     );
@@ -114,6 +121,7 @@ contract DraftPayContest {
     State public state;
     uint256 public submissionCount;
     uint8 public qualifiedCount;
+    uint256 public qualifiedBeyondCap;
     uint8 public finalistCount;
     uint256 public winnerSubmissionId;
     uint8 public payoutCount;
@@ -217,6 +225,7 @@ contract DraftPayContest {
             metadataURI: metadataURI,
             evaluated: false,
             qualified: false,
+            finalistEligible: false,
             rank: 0
         });
 
@@ -246,13 +255,20 @@ contract DraftPayContest {
         submission.evaluationHash = evaluationHash;
 
         if (qualified) {
-            if (qualifiedCount == MAX_FINALISTS) revert TooManyQualifiedSubmissions();
             submission.qualified = true;
-            qualifiedInOrder[qualifiedCount] = submissionId;
-            unchecked {
-                ++qualifiedCount;
-            }
             emit SubmissionQualified(submissionId, submission.builder, evaluationHash);
+            if (qualifiedCount < MAX_FINALISTS) {
+                submission.finalistEligible = true;
+                qualifiedInOrder[qualifiedCount] = submissionId;
+                unchecked {
+                    ++qualifiedCount;
+                }
+            } else {
+                unchecked {
+                    ++qualifiedBeyondCap;
+                }
+                emit QualifiedBeyondFinalistCap(submissionId, submission.builder);
+            }
         } else {
             emit SubmissionRejected(submissionId, submission.builder, evaluationHash);
         }
@@ -272,7 +288,7 @@ contract DraftPayContest {
             uint256 submissionId = orderedSubmissionIds[index];
             if (submissionId == 0 || submissionId > submissionCount) revert InvalidRanking();
             Submission storage submission = submissions[submissionId];
-            if (!submission.qualified || submission.rank != 0) revert InvalidRanking();
+            if (!submission.finalistEligible || submission.rank != 0) revert InvalidRanking();
             submission.rank = uint8(index + 1);
             rankedFinalists[index] = submissionId;
         }
@@ -286,7 +302,7 @@ contract DraftPayContest {
         _requireState(State.AwaitingSelection);
         if (block.timestamp > selectionDeadline) revert SelectionWindowClosed();
         Submission storage selected = submissions[submissionId];
-        if (!selected.qualified || selected.rank == 0) revert InvalidWinner(submissionId);
+        if (!selected.finalistEligible || selected.rank == 0) revert InvalidWinner(submissionId);
 
         winnerSubmissionId = submissionId;
         state = State.SettledWithWinner;

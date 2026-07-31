@@ -9,6 +9,7 @@ interface Vm {
     function expectRevert(bytes4 revertData) external;
     function expectRevert(bytes calldata revertData) external;
 }
+
 abstract contract TestBase {
     address internal constant VM_ADDRESS = address(uint160(uint256(keccak256("hevm cheat code"))));
     Vm internal constant vm = Vm(VM_ADDRESS);

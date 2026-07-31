@@ -1,9 +1,8 @@
 import {
   CircleGatewayX402Client,
-  FixtureModelAdapter,
   FixtureX402Client,
-  HttpModelAdapter,
   SpendingPolicy,
+  createModelAdapter,
   appendEvidence,
   artifactPublicUri,
   runBuilderAgent,
@@ -81,10 +80,7 @@ export async function POST(request: Request) {
           privateKey as Hex,
         )
       : new FixtureX402Client();
-    const model: ModelAdapter =
-      process.env.MODEL_PROVIDER_URL && process.env.MODEL_PROVIDER_API_KEY
-        ? new HttpModelAdapter(process.env.MODEL_PROVIDER_URL, process.env.MODEL_PROVIDER_API_KEY)
-        : new FixtureModelAdapter();
+    const model: ModelAdapter = createModelAdapter();
 
     let contest: ContestSummary = { ...createDemoContest(), state: "submission-open" };
     if (targetContest) {
@@ -181,6 +177,11 @@ export async function POST(request: Request) {
         decision: result.decision.decision,
         reasons: result.decision.reasons,
         metrics: result.decision.metrics,
+        quotedDecision: result.quotedDecision
+          ? { decision: result.quotedDecision.decision, metrics: result.quotedDecision.metrics }
+          : null,
+        probability: result.probability,
+        abandonedAfterPaidAnalysis: result.abandonedAfterPaidAnalysis,
       },
     });
     if (result.analysis) {

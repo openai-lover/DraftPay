@@ -66,7 +66,7 @@ Real artifact bytes are stored by content hash and served with sandboxing. The p
 
 ## x402 and spending safety
 
-The seller uses Circle's `@circle-fin/x402-batching` middleware when real seller configuration exists. The buyer receives 402 requirements, validates origin and price, authorizes with a server-only EOA, retries, and accepts only a paid response. Fixture mode is structurally separate and always records `paymentOccurred: false`.
+The seller uses Circle's `@circle-fin/x402-batching` middleware when real seller configuration exists. The buyer receives 402 requirements, validates origin and price, authorizes with a server-only EOA, retries, and accepts only a paid response. Fixture mode is structurally separate: it quotes the seller's advertised price so the decision is genuinely priced, and always records `paymentOccurred: false` with `amountAtomic: "0"`.
 
 Controls include per-request, per-session, and per-day atomic limits, an origin allowlist, emergency pause, process-local concurrency lock, and web rate limit. Privileged web runs additionally require an operator-entered bearer token; the wallet private key never enters the browser.
 

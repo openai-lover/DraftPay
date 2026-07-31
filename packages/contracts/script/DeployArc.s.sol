@@ -8,6 +8,7 @@ interface Vm {
     function startBroadcast() external;
     function stopBroadcast() external;
 }
+
 /// @notice Deploy with an externally configured Foundry account/keystore. Never pass a raw key.
 contract DeployArc {
     address internal constant VM_ADDRESS = address(uint160(uint256(keccak256("hevm cheat code"))));

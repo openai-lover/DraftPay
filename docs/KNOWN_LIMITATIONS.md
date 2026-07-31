@@ -20,10 +20,12 @@ No item above is represented as complete in this repository.
 - Testnet only; contracts are unaudited and not upgradeable.
 - Evaluator qualification/ranking is centralized, though evidence hashes and transitions are public.
 - No dispute process, evaluator quorum, arbitration, governance, compliance, production session system, or mainnet safety claim.
-- Maximum three qualified finalists, intentionally bounding settlement gas.
+- Any number of submissions may qualify, but only the first three are payout-eligible. Later
+  qualified work is recorded onchain via `QualifiedBeyondFinalistCap` and earns nothing.
 - Only responsive static landing pages are supported.
 - Agent runs are explicitly triggered; continuous factory discovery/watchers are stretch scope.
-- Real model generation uses a generic HTTP adapter and needs a provider key.
+- Real model generation needs `MODEL_PROVIDER_URL` and `MODEL_PROVIDER_API_KEY`. Without them the
+  agent uses the deterministic fixture generator and labels the artifact `fixture`.
 - Submitted repositories are never installed or executed.
 - Generated artifact HTML uses local storage in the MVP. Production needs durable object storage and a real screenshot worker.
 - Process-local spending counters, concurrency lock, and web rate limiter are not distributed controls.
@@ -34,6 +36,8 @@ No item above is represented as complete in this repository.
 ## Evidence limitations
 
 - Seeded addresses identify demo actors only and are labeled Fixture.
+- The fixture x402 client quotes the seller's advertised price so the decision is genuinely
+  priced, but records `paymentOccurred: false` and `amountAtomic: "0"` because nothing settled.
 - Seeded settlement receipts are payout previews, not transactions.
 - Real receipt UI requires a valid transaction hash and contest address, then validates the Arc receipt before showing a Real badge.
 - There are currently no DraftPay contract addresses, ArcScan transaction links, real x402 receipt IDs, or public deployment URLs to report.

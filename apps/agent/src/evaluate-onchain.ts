@@ -18,6 +18,22 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
+/** Mirrors DraftPayContest.MAX_FINALISTS. */
+export const MAX_FINALISTS = 3;
+
+/**
+ * The contract records every qualified submission but seats only MAX_FINALISTS of them for
+ * payout. Seating the highest scores keeps the payout-eligible set the strongest work rather
+ * than whichever entries happened to be evaluated first.
+ */
+export function selectFinalistSeats(assessments: EvaluationAssessment[]): bigint[] {
+  return assessments
+    .filter((assessment) => assessment.qualified)
+    .sort((left, right) => right.score - left.score)
+    .slice(0, MAX_FINALISTS)
+    .map((assessment) => assessment.submissionId);
+}
+
 export interface EvaluationAssessment {
   submissionId: bigint;
   qualified: boolean;
@@ -37,9 +53,6 @@ export async function evaluateContestOnArc(
   input: EvaluateContestInput,
 ): Promise<TransactionEvidence[]> {
   if (!isAddress(input.contestAddress)) throw new Error("Invalid contest address");
-  if (input.assessments.filter((assessment) => assessment.qualified).length > 3) {
-    throw new Error("At most three qualified finalists are supported");
-  }
   if (input.assessments.some((assessment) => assessment.submissionId <= 0n)) {
     throw new Error("Submission IDs must be positive");
   }
@@ -111,7 +124,11 @@ export async function evaluateContestOnArc(
   }
   if (state !== 2) throw new Error(`Contest must be in Evaluation state, received ${state}`);
 
-  for (const assessment of input.assessments) {
+  const evaluationOrder = [...input.assessments].sort((left, right) => {
+    if (left.qualified !== right.qualified) return left.qualified ? -1 : 1;
+    return right.score - left.score;
+  });
+  for (const assessment of evaluationOrder) {
     const hardFailure = assessment.hardChecks.some((check) => !check.passed);
     if (hardFailure && assessment.qualified) {
       throw new Error(
@@ -138,10 +155,7 @@ export async function evaluateContestOnArc(
     );
   }
 
-  const ranked = input.assessments
-    .filter((assessment) => assessment.qualified)
-    .sort((left, right) => right.score - left.score)
-    .map((assessment) => assessment.submissionId);
+  const ranked = selectFinalistSeats(input.assessments);
   const rankingEvidenceHash = keccak256(
     toBytes(JSON.stringify(ranked.map((submissionId) => submissionId.toString()))),
   );
