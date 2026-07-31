@@ -1,0 +1,39 @@
+{
+  "name": "@draftpay/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:e2e": "playwright test",
+    "clean": "next clean 2>/dev/null || true"
+  },
+  "dependencies": {
+    "@draftpay/agent": "workspace:*",
+    "@draftpay/chain": "workspace:*",
+    "@draftpay/shared": "workspace:*",
+    "@draftpay/ui": "workspace:*",
+    "@tanstack/react-query": "5.101.3",
+    "lucide-react": "1.25.0",
+    "next": "16.2.10",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "viem": "2.55.4",
+    "wagmi": "3.7.3",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "eslint-config-next": "16.2.10",
+    "postcss": "8.5.20",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "draftpay",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=22.6.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @draftpay/web dev",
+    "build": "pnpm -r --if-present build",
+    "lint": "eslint . && pnpm contracts:fmt",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "test:unit": "pnpm --filter @draftpay/shared test && pnpm --filter @draftpay/agent test && pnpm --filter @draftpay/web test",
+    "test:integration": "pnpm --filter @draftpay/x402-service test",
+    "test:e2e": "pnpm --filter @draftpay/web test:e2e",
+    "contracts:build": "pnpm --filter @draftpay/contracts build",
+    "contracts:test": "pnpm --filter @draftpay/contracts test",
+    "contracts:fmt": "pnpm --filter @draftpay/contracts fmt:check",
+    "contracts:deploy:arc": "pnpm --filter @draftpay/contracts deploy:arc",
+    "web:deploy": "pnpm dlx vercel@latest --prod",
+    "agent": "pnpm --filter @draftpay/agent start",
+    "x402": "pnpm --filter @draftpay/x402-service start",
+    "agent:evaluate:arc": "pnpm --filter @draftpay/agent evaluate:arc",
+    "demo:seed": "tsx scripts/demo-data.ts seed",
+    "demo:reset": "tsx scripts/demo-data.ts reset",
+    "demo:run": "tsx scripts/demo-runner.ts",
+    "clean": "pnpm -r --if-present clean"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@types/node": "26.1.1",
+    "eslint": "9.39.5",
+    "prettier": "3.9.6",
+    "tsx": "4.23.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.65.0",
+    "viem": "2.55.4"
+  }
+}

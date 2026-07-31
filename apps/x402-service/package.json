@@ -1,0 +1,27 @@
+{
+  "name": "@draftpay/x402-service",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@circle-fin/x402-batching": "3.2.0",
+    "@draftpay/shared": "workspace:*",
+    "@x402/core": "2.19.0",
+    "@x402/evm": "2.19.0",
+    "express": "5.2.1",
+    "viem": "2.55.4",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "tsx": "4.23.1",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  }
+}

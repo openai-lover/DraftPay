@@ -1,0 +1,69 @@
+import { parseAbi } from "viem";
+
+export const usdcAbi = parseAbi([
+  "function balanceOf(address account) view returns (uint256)",
+  "function allowance(address owner, address spender) view returns (uint256)",
+  "function approve(address spender, uint256 amount) returns (bool)",
+  "function transfer(address to, uint256 amount) returns (bool)",
+  "function transferFrom(address from, address to, uint256 amount) returns (bool)",
+  "function decimals() view returns (uint8)",
+]);
+
+export const draftPayFactoryAbi = parseAbi([
+  "function usdc() view returns (address)",
+  "function contestCount() view returns (uint256)",
+  "function contests(uint256 contestId) view returns (address)",
+  "function createContest(address evaluator, uint256 prizeAmount, uint64 submissionDeadline, uint64 selectionDeadline, bytes32 specificationHash) returns (uint256 contestId, address contest)",
+  "event ContestCreated(address indexed contest, address indexed client, address indexed evaluator, uint256 prizeAmount, uint64 submissionDeadline, uint64 selectionDeadline, bytes32 specificationHash)",
+]);
+
+export const draftPayContestAbi = parseAbi([
+  "event ContestCreated(address indexed contest, address indexed client, address indexed evaluator, uint256 prizeAmount, uint64 submissionDeadline, uint64 selectionDeadline, bytes32 specificationHash)",
+  "function usdc() view returns (address)",
+  "function client() view returns (address)",
+  "function evaluator() view returns (address)",
+  "function prizeAmount() view returns (uint256)",
+  "function submissionDeadline() view returns (uint64)",
+  "function selectionDeadline() view returns (uint64)",
+  "function specificationHash() view returns (bytes32)",
+  "function state() view returns (uint8)",
+  "function submissionCount() view returns (uint256)",
+  "function qualifiedCount() view returns (uint8)",
+  "function finalistCount() view returns (uint8)",
+  "function winnerSubmissionId() view returns (uint256)",
+  "function fund()",
+  "function cancel()",
+  "function submit(bytes32 deliverableHash, string metadataURI) returns (uint256 submissionId)",
+  "function beginEvaluation()",
+  "function evaluateSubmission(uint256 submissionId, bool qualified, bytes32 evaluationHash)",
+  "function rankFinalists(uint256[] orderedSubmissionIds, bytes32 rankingEvidenceHash)",
+  "function selectWinner(uint256 submissionId)",
+  "function settleNoWinner()",
+  "function refundNoQualified()",
+  "function getSubmission(uint256 submissionId) view returns ((address builder, bytes32 deliverableHash, bytes32 evaluationHash, string metadataURI, bool evaluated, bool qualified, uint8 rank))",
+  "function getRankedFinalists() view returns (uint256[3] ids, uint8 count)",
+  "function getPayouts() view returns ((address recipient, uint256 amount, uint256 submissionId)[] payouts)",
+  "event ContestFunded(address indexed client, uint256 amount)",
+  "event SubmissionSubmitted(uint256 indexed submissionId, address indexed builder, bytes32 indexed deliverableHash, string metadataURI)",
+  "event EvaluationOpened(uint64 openedAt)",
+  "event SubmissionQualified(uint256 indexed submissionId, address indexed builder, bytes32 evaluationHash)",
+  "event SubmissionRejected(uint256 indexed submissionId, address indexed builder, bytes32 evaluationHash)",
+  "event FinalistsRanked(uint256[3] submissionIds, uint8 count, bytes32 rankingEvidenceHash)",
+  "event WinnerSelected(uint256 indexed submissionId, address indexed builder)",
+  "event PayoutRecorded(address indexed recipient, uint256 amount, uint256 indexed submissionId)",
+  "event WinnerSettled(uint256 indexed winnerSubmissionId, address indexed winner, uint256 winnerAmount, uint256 finalistAmount)",
+  "event NoWinnerSettled(uint256 clientRefund, uint256 effortProtectionPaid, uint8 finalistCount)",
+  "event ClientRefunded(address indexed client, uint256 amount)",
+  "event ContestCancelled(address indexed client)",
+]);
+
+export const contestStateLabels = [
+  "Created",
+  "Submission open",
+  "Evaluation",
+  "Awaiting selection",
+  "Settled with winner",
+  "Settled without winner",
+  "Refunded",
+  "Cancelled",
+] as const;

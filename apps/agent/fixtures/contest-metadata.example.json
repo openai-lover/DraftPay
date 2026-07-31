@@ -1,0 +1,47 @@
+{
+  "specification": {
+    "category": "responsive-landing-page",
+    "title": "Build the Ledgerly SaaS launch page",
+    "brief": "Build a responsive SaaS landing page for Ledgerly with a strong hero, a three-tier pricing section, a primary call-to-action, and a contact form. The page must work at mobile widths without horizontal overflow.",
+    "requiredHeadline": "Close the books without closing your weekend.",
+    "requirements": [
+      { "id": "hero", "label": "Hero section", "kind": "section", "required": true },
+      { "id": "pricing", "label": "Pricing section", "kind": "section", "required": true },
+      {
+        "id": "cta",
+        "label": "Primary call-to-action",
+        "kind": "interaction",
+        "required": true
+      },
+      { "id": "contact", "label": "Contact form", "kind": "interaction", "required": true },
+      {
+        "id": "mobile",
+        "label": "No horizontal overflow at 390px",
+        "kind": "responsive",
+        "required": true
+      },
+      {
+        "id": "accessibility",
+        "label": "Semantic controls, labeled form input, and keyboard-operable actions",
+        "kind": "accessibility",
+        "required": true
+      },
+      { "id": "scripts", "label": "No external scripts", "kind": "safety", "required": true }
+    ],
+    "responsiveBreakpoints": [390, 680, 1120],
+    "accessibilityExpectations": [
+      "Document declares its language",
+      "Email input has an accessible label",
+      "Primary actions use native links or buttons"
+    ],
+    "scoringRubric": [
+      { "id": "requirements", "label": "Objective requirements", "weightBps": 5000 },
+      { "id": "clarity", "label": "Visual hierarchy and clarity", "weightBps": 3000 },
+      { "id": "craft", "label": "Responsive product craft", "weightBps": 2000 }
+    ],
+    "approved": true
+  },
+  "prizeAtomic": "100000000",
+  "submissionDeadlineEpochSeconds": 1893542400,
+  "selectionDeadlineEpochSeconds": 1893628800
+}

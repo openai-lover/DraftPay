@@ -1,0 +1,13 @@
+[
+  {
+    "submissionId": "1",
+    "qualified": true,
+    "score": 96,
+    "hardChecks": [
+      { "id": "loads", "passed": true, "detail": "Preview returned a document" },
+      { "id": "sections", "passed": true, "detail": "Hero, pricing, CTA, and contact found" },
+      { "id": "mobile", "passed": true, "detail": "Deterministic static mobile CSS guard passed" },
+      { "id": "scripts", "passed": true, "detail": "No external scripts" }
+    ]
+  }
+]

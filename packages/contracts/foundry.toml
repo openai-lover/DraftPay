@@ -1,0 +1,21 @@
+[profile.default]
+src = "src"
+test = "test"
+script = "script"
+out = "out"
+libs = []
+solc_version = "0.8.26"
+optimizer = true
+optimizer_runs = 20_000
+bytecode_hash = "none"
+cbor_metadata = false
+fuzz = { runs = 256 }
+
+[fmt]
+line_length = 100
+tab_width = 4
+bracket_spacing = true
+int_types = "long"
+
+[rpc_endpoints]
+arc_testnet = "${ARC_TESTNET_RPC_URL}"
