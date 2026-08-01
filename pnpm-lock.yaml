@@ -40,9 +40,6 @@ importers:
       "@draftpay/chain":
         specifier: workspace:*
         version: link:../../packages/chain
-      "@draftpay/shared":
-        specifier: workspace:*
-        version: link:../../packages/shared
       "@playwright/test":
         specifier: 1.61.1
         version: 1.61.1
