@@ -1,18 +1,4 @@
-import {
-  CircleGatewayX402Client,
-  FixtureX402Client,
-  SpendingPolicy,
-  createModelAdapter,
-  appendEvidence,
-  artifactPublicUri,
-  listStoredArtifactHashes,
-  runBuilderAgent,
-  readContestOnArc,
-  storeArtifact,
-  submitProofOnArc,
-  type ModelAdapter,
-  type X402BriefClient,
-} from "@draftpay/agent";
+import type { ModelAdapter, X402BriefClient } from "@draftpay/agent";
 import {
   approvedContestMetadataSchema,
   createDemoContest,
@@ -27,6 +13,16 @@ let running = false;
 const requestsByAddress = new Map<string, { count: number; resetAt: number }>();
 
 export async function POST(request: Request) {
+  if (process.env.VERCEL === "1") {
+    return Response.json(
+      {
+        error:
+          "Hosted Builder Agent runs are disabled; use the dedicated low-balance local operator wallet",
+      },
+      { status: 503 },
+    );
+  }
+
   const caller = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
   const now = Date.now();
   const rate = requestsByAddress.get(caller);
@@ -42,17 +38,28 @@ export async function POST(request: Request) {
   if (running) return Response.json({ error: "Builder Agent is already running" }, { status: 429 });
   running = true;
   try {
+    const {
+      CircleGatewayX402Client,
+      FixtureX402Client,
+      SpendingPolicy,
+      createModelAdapter,
+      appendEvidence,
+      artifactPublicUri,
+      listStoredArtifactHashes,
+      runBuilderAgent,
+      readContestOnArc,
+      storeArtifact,
+      submitProofOnArc,
+    } = await import("@draftpay/agent");
     const realX402 = process.env.X402_MODE === "real";
     const privateKey = process.env.AGENT_PRIVATE_KEY;
     const targetContest = process.env.AGENT_SUBMIT_CONTEST_ADDRESS;
-    const hosted = process.env.VERCEL === "1";
-    if (hosted || realX402 || targetContest) {
+    if (realX402 || targetContest) {
       const runToken = process.env.AGENT_RUN_TOKEN;
       if (!runToken) {
         return Response.json(
           {
-            error:
-              "AGENT_RUN_TOKEN is required before enabling hosted or privileged web agent runs",
+            error: "AGENT_RUN_TOKEN is required before enabling privileged web agent runs",
           },
           { status: 503 },
         );
