@@ -1,16 +1,61 @@
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { createDemoContest } from "@draftpay/shared";
+import { notFound } from "next/navigation";
+import { getDemoContest, type ContestLifecycleState } from "@draftpay/shared";
 import { DataRow, EvidenceBadge, SectionLabel, StatusPill } from "@draftpay/ui";
-import { displayDate, usdc } from "@/lib/format";
+import { displayDate, relativeTime, usdc } from "@/lib/format";
 import { OnchainContestPanel } from "@/components/onchain-contest-panel";
 import { NoWinnerControl } from "@/components/no-winner-control";
 
-export const metadata = { title: "SaaS launch contest" };
 export const dynamic = "force-dynamic";
 
-export default function ContestDetailPage() {
-  const demoContest = createDemoContest();
+interface ContestDetailPageProps {
+  params: Promise<{ id: string }>;
+}
+
+function statePresentation(state: ContestLifecycleState): {
+  label: string;
+  tone: "blue" | "amber" | "teal" | "neutral";
+} {
+  switch (state) {
+    case "submission-open":
+      return { label: "Accepting builds", tone: "teal" };
+    case "evaluation":
+      return { label: "In verification", tone: "amber" };
+    case "awaiting-selection":
+      return { label: "Awaiting selection", tone: "blue" };
+    case "settled-with-winner":
+      return { label: "Winner preview", tone: "neutral" };
+    default:
+      return { label: state.replaceAll("-", " "), tone: "neutral" };
+  }
+}
+
+export async function generateMetadata({ params }: ContestDetailPageProps) {
+  const { id } = await params;
+  const contest = getDemoContest(id);
+
+  return { title: contest?.title ?? "Contest not found" };
+}
+
+export default async function ContestDetailPage({ params }: ContestDetailPageProps) {
+  const { id } = await params;
+  const demoContest = getDemoContest(id);
+  if (!demoContest) notFound();
+
+  const presentation = statePresentation(demoContest.state);
+  const isFlagship = demoContest.id === "saas-launch-01";
+  const isSettled = demoContest.state === "settled-with-winner";
+  const primaryHref = isFlagship
+    ? `/contests/${demoContest.id}/compare`
+    : isSettled
+      ? "/settlements/winner"
+      : "/activity";
+  const primaryLabel = isFlagship
+    ? "Compare submissions"
+    : isSettled
+      ? "View demo settlement"
+      : "Inspect marketplace activity";
 
   return (
     <div className="shell">
@@ -19,8 +64,11 @@ export default function ContestDetailPage() {
         <h1>{demoContest.title}</h1>
         <div className="page-header__meta">
           <EvidenceBadge mode={demoContest.mode} />
-          <StatusPill tone="blue">Awaiting selection</StatusPill>
-          <span>Three qualified results ready to compare</span>
+          <StatusPill tone={presentation.tone}>{presentation.label}</StatusPill>
+          <span>
+            {demoContest.clientName} · {demoContest.activityLabel} · updated{" "}
+            {relativeTime(demoContest.updatedAt)}
+          </span>
         </div>
       </header>
       <div className="detail-grid">
@@ -55,8 +103,11 @@ export default function ContestDetailPage() {
         <aside>
           <div className="side-panel">
             <h2>Contest status</h2>
+            <DataRow label="Client">{demoContest.clientName}</DataRow>
             <DataRow label="Escrow">Fixture rule preview</DataRow>
-            <DataRow label="Submissions">{demoContest.qualifiedCount} qualified</DataRow>
+            <DataRow label="Submissions">
+              {demoContest.submissionCount} entered · {demoContest.qualifiedCount} qualified
+            </DataRow>
             <DataRow label="Submission deadline">
               {displayDate(demoContest.submissionDeadline)}
             </DataRow>
@@ -65,24 +116,25 @@ export default function ContestDetailPage() {
             </DataRow>
             <DataRow label="Contract">Not deployed in fixture mode</DataRow>
             <div className="side-panel__actions">
-              <Link className="button button--wide" href={`/contests/${demoContest.id}/compare`}>
-                Compare submissions <ArrowRight size={16} />
+              <Link className="button button--wide" href={primaryHref}>
+                {primaryLabel} <ArrowRight size={16} />
               </Link>
               <Link className="button button--secondary button--wide" href="/activity">
                 View agent activity
               </Link>
-              <a
-                className="button button--quiet button--wide"
-                href="https://testnet.arcscan.app"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open ArcScan <ExternalLink size={14} />
-              </a>
             </div>
           </div>
-          <OnchainContestPanel />
-          <NoWinnerControl />
+          {isFlagship ? (
+            <>
+              <OnchainContestPanel />
+              <NoWinnerControl />
+            </>
+          ) : (
+            <div className="notice notice--amber" style={{ marginTop: 18 }}>
+              Demo-only scenario. No wallet payment, deployed contract, or onchain receipt exists
+              for this seeded contest.
+            </div>
+          )}
         </aside>
       </div>
     </div>

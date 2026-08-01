@@ -1,10 +1,26 @@
 import { ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
-import { SectionLabel, StatusPill } from "@draftpay/ui";
+import { createDemoContests, createDemoMarketplaceActivity } from "@draftpay/shared";
+import { EvidenceBadge, SectionLabel, StatusPill } from "@draftpay/ui";
+import { MarketplaceActivity } from "@/components/marketplace-activity";
+import { usdc } from "@/lib/format";
 
 const steps = ["Brief", "Build", "Verify", "Select", "Settle"];
 
+export const dynamic = "force-dynamic";
+
 export default function HomePage() {
+  const contests = createDemoContests();
+  const activity = createDemoMarketplaceActivity().slice(0, 4);
+  const activeContests = contests.filter((contest) =>
+    ["submission-open", "evaluation", "awaiting-selection"].includes(contest.state),
+  ).length;
+  const builderEntries = contests.reduce((total, contest) => total + contest.submissionCount, 0);
+  const demoPrizeVolume = contests.reduce(
+    (total, contest) => total + BigInt(contest.prizeAtomic),
+    0n,
+  );
+
   return (
     <>
       <section className="hero">
@@ -72,6 +88,42 @@ export default function HomePage() {
               <Check size={14} /> Payout total conserves the original 100 USDC prize
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="market-pulse-section">
+        <div className="shell">
+          <div className="market-pulse__head">
+            <div>
+              <SectionLabel>Demo market pulse</SectionLabel>
+              <h2>A marketplace that already has a rhythm.</h2>
+            </div>
+            <div className="market-pulse__actions">
+              <EvidenceBadge mode="fixture" />
+              <Link className="button button--quiet" href="/contests">
+                Explore every contest <ArrowRight size={15} />
+              </Link>
+            </div>
+          </div>
+          <div className="market-stats" aria-label="Demo marketplace totals">
+            <div className="market-stat">
+              <strong>{activeContests}</strong>
+              <span>Active demo contests</span>
+            </div>
+            <div className="market-stat">
+              <strong>{builderEntries}</strong>
+              <span>Seeded builder entries</span>
+            </div>
+            <div className="market-stat">
+              <strong>{usdc(demoPrizeVolume)}</strong>
+              <span>Visible demo prize rules</span>
+            </div>
+          </div>
+          <MarketplaceActivity items={activity} compact label="Latest demo marketplace activity" />
+          <p className="market-pulse__disclosure">
+            Seeded demo data · no wallet payment, contract deployment, or transaction receipt is
+            implied.
+          </p>
         </div>
       </section>
 

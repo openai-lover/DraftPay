@@ -29,6 +29,13 @@ export interface ContestSummary {
   fundingTransactionHash: string | null;
 }
 
+export interface DemoContestSummary extends ContestSummary {
+  clientName: string;
+  submissionCount: number;
+  updatedAt: string;
+  activityLabel: string;
+}
+
 export interface VerificationCheck {
   id: string;
   label: string;
@@ -61,6 +68,18 @@ export interface AgentActivityItem {
   label: string;
   detail: string;
   status: "complete" | "pending" | "skipped" | "failed";
+  value?: string;
+}
+
+export interface MarketplaceActivityItem {
+  id: string;
+  mode: EvidenceMode;
+  occurredAt: string;
+  actor: string;
+  action: string;
+  detail: string;
+  contestId: string;
+  status: "complete" | "pending" | "skipped";
   value?: string;
 }
 

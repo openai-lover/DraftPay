@@ -20,3 +20,16 @@ export function displayDate(value: string): string {
     timeZoneName: "short",
   }).format(new Date(value));
 }
+
+export function relativeTime(value: string, now = new Date()): string {
+  const elapsedMs = Math.max(0, now.getTime() - new Date(value).getTime());
+  const elapsedMinutes = Math.floor(elapsedMs / (60 * 1_000));
+
+  if (elapsedMinutes < 1) return "just now";
+  if (elapsedMinutes < 60) return `${elapsedMinutes}m ago`;
+
+  const elapsedHours = Math.floor(elapsedMinutes / 60);
+  if (elapsedHours < 24) return `${elapsedHours}h ago`;
+
+  return `${Math.floor(elapsedHours / 24)}d ago`;
+}
