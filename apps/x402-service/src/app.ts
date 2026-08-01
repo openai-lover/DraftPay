@@ -1,11 +1,11 @@
 import { createGatewayMiddleware } from "@circle-fin/x402-batching/server";
+import express, { type NextFunction, type Request, type Response } from "express";
+import { isAddress } from "viem";
 import {
   analyzeBrief,
   briefAnalysisRequestSchema,
   type BriefAnalysisRequest,
-} from "@draftpay/shared";
-import express, { type NextFunction, type Request, type Response } from "express";
-import { isAddress } from "viem";
+} from "./analysis";
 
 type PaidRequest = Request & {
   payment?: {

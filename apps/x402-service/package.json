@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@circle-fin/x402-batching": "3.2.0",
-    "@draftpay/shared": "workspace:*",
     "@x402/core": "2.19.0",
     "@x402/evm": "2.19.0",
     "express": "5.2.1",

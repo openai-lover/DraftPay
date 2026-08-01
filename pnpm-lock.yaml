@@ -135,9 +135,6 @@ importers:
       "@circle-fin/x402-batching":
         specifier: 3.2.0
         version: 3.2.0(@x402/core@2.19.0)(@x402/evm@2.19.0(typescript@6.0.3))(viem@2.55.4(typescript@6.0.3)(zod@4.4.3))
-      "@draftpay/shared":
-        specifier: workspace:*
-        version: link:../../packages/shared
       "@x402/core":
         specifier: 2.19.0
         version: 2.19.0
