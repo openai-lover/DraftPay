@@ -6,6 +6,7 @@ import {
   briefAnalysisRequestSchema,
   type BriefAnalysisRequest,
 } from "./analysis.js";
+import { readServiceConfig } from "./config.js";
 
 type PaidRequest = Request & {
   payment?: {
@@ -127,3 +128,5 @@ export function createApp(config: X402ServiceConfig) {
 
   return app;
 }
+
+export default createApp(readServiceConfig().app);
