@@ -23,13 +23,32 @@ Arc and the Arc USDC ERC-20 interface enforce exact escrow, deadlines, qualifica
 
 ### 3. What does the autonomous agent decide?
 
-The Builder Agent reads the pinned contest directly from Arc and checks its approved metadata hash. It evaluates category support, open state, prize, time remaining, generation and verification costs, x402 price, qualification probability, required tools, expected value, request/session/daily spend limits, service origin, and emergency pause. It stores concise reasons and measurable inputs—not hidden chain-of-thought.
+The Builder Agent reads the pinned contest directly from Arc and checks its approved metadata hash. It evaluates category support, open state, prize, time remaining, generation and verification costs, x402 price, qualification probability, required tools, expected value, request/session/daily spend limits, service origin, and emergency pause. It stores concise reasons and measurable inputs, not hidden chain-of-thought.
+
+The decision runs three times, and the purchased analysis is what separates the second from the third:
+
+| Stage         | What changes                                                                                                                        |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Pre-quote     | Screens the contest before spending anything, including a quote request.                                                            |
+| Post-quote    | Re-decides against the advertised x402 price. An over-limit quote means it never pays.                                              |
+| Post-analysis | Recalibrates the qualification prior from the analysis it bought and replaces its own build-cost guess with the purchased estimate. |
+
+On the seeded contest that reads:
+
+```text
+before paid analysis   72.00% qualification   80000 build cost   68.26 USDC expected value
+after  paid analysis   64.50% qualification  110000 build cost   61.105 USDC expected value
+  -450 bps  paid analysis risk score 18
+  -300 bps  paid analysis complexity medium
+```
+
+If the purchased analysis destroys the economics, the agent abandons the contest after paying, records `abandonedAfterPaidAnalysis: true`, and never invokes the generator. A purchase that can only ever confirm the prior is not a decision.
 
 ### 4. Where does USDC move?
 
 - Client → contest: the exact prize during `fund`.
-- Contest → selected winner and other finalists: 95% to the winner; the remaining 5% split equally across the other qualified finalists. With one finalist, the winner receives 100%.
-- Contest → ranked builders and client when no winner is selected: 15% / 10% / 5% to ranks one through three; every unused share returns to the client.
+- Contest → selected winner and other finalists: 95% to the winner; the remaining 5% split equally across the other payout-eligible finalists. With one finalist, the winner receives 100%.
+- Contest → ranked builders and client when no winner is selected: 15% / 10% / 5% to ranks one through three; every unused share returns to the client. The client therefore receives 70% with three finalists, 75% with two, 85% with one, and 100% when nobody qualifies.
 - Contest → client when nobody qualifies: 100% refund.
 
 All values use the Arc USDC ERC-20 interface at `0x3600000000000000000000000000000000000000` with 6 decimals. Prize conservation is tested in atomic units.
@@ -40,7 +59,9 @@ All values use the Arc USDC ERC-20 interface at `0x36000000000000000000000000000
 
 ### 6. Where is x402 used?
 
-The Builder Agent calls `POST /x402/brief-analysis`. In real mode it receives the HTTP 402 requirements, validates price and origin against policy, authorizes an Arc USDC Nanopayment through Circle Gateway, retries, validates the paid response, and stores the payment ID as evidence. Fixture mode is a separate adapter with `paymentOccurred: false`.
+The Builder Agent calls `POST /x402/brief-analysis`. In real mode it receives the HTTP 402 requirements, validates price and origin against policy, authorizes an Arc USDC Nanopayment through Circle Gateway, retries, validates the paid response, and stores the payment ID as evidence.
+
+Fixture mode quotes the same advertised price the seller charges (`10000` atomic, $0.01) so the participation decision is genuinely priced, while recording `paymentOccurred: false` and `amountAtomic: "0"` because nothing settled. Both modes report `quotedAmountAtomic` alongside the settled amount.
 
 ### 7. How can judges reproduce the demo?
 
@@ -68,6 +89,7 @@ Submission bonds, ERC-8004 identity, continuous factory discovery, a custom chai
 ## Implemented
 
 - Foundry factory and isolated contest escrow with an explicit state machine.
+- Unbounded qualification with a bounded payout set: any submission may be evaluated and marked qualified, while only the first three become finalist-eligible. The evaluator never has to reject valid work to keep a transaction from reverting.
 - Exact winner, no-winner, and no-qualified payout paths with permissionless expiry settlement.
 - Contract unit, invariant-style conservation fuzz, fee-on-transfer, and reentrancy tests.
 - Next.js product with landing, explore, create/fund, contest detail, agent activity, three-way comparison, verified receipt, and agent profile surfaces.

@@ -5,28 +5,28 @@ Evidence status: local implementation is complete; external Arc/Circle/hosting e
 
 No transaction hash, address, ArcScan URL, payment ID, deployment, or hosted URL is inserted until it exists and has been checked.
 
-| Requirement            | Implementation                                                                           | Demo evidence                               | Remaining boundary                         |
-| ---------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------------ |
-| Arc Testnet            | Chain `5042002` assertion, verified RPC/explorer, persistent Testnet warning             | Connect wallet; inspect live contest        | Real write needs wallet/faucet             |
-| USDC escrow            | Per-contest exact balance-delta funding pull                                             | Create → approve → fund                     | Factory deployment pending                 |
-| Deadline state machine | Created/Open/Evaluation/Awaiting/terminal enum and guarded transitions                   | Winner and expired no-winner paths          | Block timestamps; unaudited                |
-| Winner settlement      | Client selects only a ranked qualified ID; terminal 95/5 payout                          | Compare → Select winner → Receipt           | Real receipt pending                       |
-| No-winner settlement   | Ranked 15/10/5 rewards, unused shares refunded                                           | Permissionless expiry control → Receipt     | Real receipt pending                       |
-| No-qualified refund    | Full prize returned when zero submissions qualify                                        | Contract test and UI rule preview           | Real receipt pending                       |
-| Permissionless expiry  | Any account may settle after deadline; qualification order is fallback if ranking stalls | Second contest                              | Existing qualifications only               |
-| Conservation           | Integer atomic math and bounded recipient set                                            | Receipt arithmetic; Foundry fuzz tests      | Not formally verified                      |
-| Reentrancy/integrity   | CEI, reentrancy guard, safe transfer, immutable token                                    | Reentrant/fee token tests                   | Unaudited                                  |
-| ERC-8183 alignment     | Create/fund/submit/evaluate/complete and content-hash semantics                          | Architecture explanation                    | Not claimed compliant                      |
-| Builder autonomy       | Explicit EV, time, tool, state, and spend decision                                       | Agent Activity metrics and reasons          | Explicitly triggered, not watcher          |
-| Agent wallet           | Server-only low-balance signer and chain check                                           | Real proof receipt when configured          | External EOA required                      |
-| x402                   | Circle Gateway buyer/seller adapters and paid analysis endpoint                          | Real settled payment ID only when produced  | Circle funding/config pending              |
-| Spending safety        | Request/session/day caps, origin allowlist, pause, operator token, lock/rate limit       | Agent tests and UI                          | Process-local controls                     |
-| Verification           | Required content/interaction/a11y/static-mobile/script/duplicate hard gates              | Submission detail and comparison            | No arbitrary repo execution                |
-| Artifact proof         | Keccak hash, content-addressed bytes, sandboxed public URI                               | Hash and proof receipt                      | Durable object store is stretch            |
-| Direct chain authority | Agent/UI read contract state and receipts directly                                       | Real contest input says “Verified from Arc” | No custom indexer/database by design       |
-| Real/fixture truth     | Structural evidence modes and no fake receipts                                           | Badges throughout product                   | Presenter must preserve labels             |
-| Winner/no-winner E2E   | Desktop and mobile Playwright journeys                                                   | `pnpm test:e2e` — 8 / 8 passed              | Browser binaries must be installed locally |
-| Deployment command     | Vercel monorepo link/deploy command documented                                           | `pnpm web:deploy`                           | Interactive hosting login pending          |
+| Requirement            | Implementation                                                                                | Demo evidence                               | Remaining boundary                         |
+| ---------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------------ |
+| Arc Testnet            | Chain `5042002` assertion, verified RPC/explorer, persistent Testnet warning                  | Connect wallet; inspect live contest        | Real write needs wallet/faucet             |
+| USDC escrow            | Per-contest exact balance-delta funding pull                                                  | Create → approve → fund                     | Factory deployment pending                 |
+| Deadline state machine | Created/Open/Evaluation/Awaiting/terminal enum and guarded transitions                        | Winner and expired no-winner paths          | Block timestamps; unaudited                |
+| Winner settlement      | Client selects only a ranked qualified ID; terminal 95/5 payout                               | Compare → Select winner → Receipt           | Real receipt pending                       |
+| No-winner settlement   | Ranked 15/10/5 rewards; client keeps 70/75/85% by finalist count                              | Permissionless expiry control → Receipt     | Real receipt pending                       |
+| No-qualified refund    | Full prize returned when zero submissions qualify                                             | Contract test and UI rule preview           | Real receipt pending                       |
+| Permissionless expiry  | Any account may settle after deadline; qualification order is fallback if ranking stalls      | Second contest                              | Existing qualifications only               |
+| Conservation           | Integer atomic math; unbounded qualification with a bounded payout set                        | Receipt arithmetic; Foundry fuzz tests      | Not formally verified                      |
+| Reentrancy/integrity   | CEI, reentrancy guard, safe transfer, immutable token                                         | Reentrant/fee token tests                   | Unaudited                                  |
+| ERC-8183 alignment     | Create/fund/submit/evaluate/complete and content-hash semantics                               | Architecture explanation                    | Not claimed compliant                      |
+| Builder autonomy       | Three-stage decision; the purchased analysis recalibrates the prior and can force a walk-away | Agent Activity before/after metrics         | Explicitly triggered, not watcher          |
+| Agent wallet           | Server-only low-balance signer and chain check                                                | Real proof receipt when configured          | External EOA required                      |
+| x402                   | Circle Gateway buyer/seller adapters and paid analysis endpoint                               | Real settled payment ID only when produced  | Circle funding/config pending              |
+| Spending safety        | Request/session/day caps, origin allowlist, pause, operator token, lock/rate limit            | Agent tests and UI                          | Process-local controls                     |
+| Verification           | Required content/interaction/a11y/static-mobile/script/duplicate hard gates                   | Submission detail and comparison            | No arbitrary repo execution                |
+| Artifact proof         | Keccak hash, content-addressed bytes, sandboxed public URI                                    | Hash and proof receipt                      | Durable object store is stretch            |
+| Direct chain authority | Agent/UI read contract state and receipts directly                                            | Real contest input says “Verified from Arc” | No custom indexer/database by design       |
+| Real/fixture truth     | Structural evidence modes and no fake receipts                                                | Badges throughout product                   | Presenter must preserve labels             |
+| Winner/no-winner E2E   | Desktop and mobile Playwright journeys                                                        | `pnpm test:e2e` — 8 / 8 passed              | Browser binaries must be installed locally |
+| Deployment command     | Vercel monorepo link/deploy command documented                                                | `pnpm web:deploy`                           | Interactive hosting login pending          |
 
 ## Local evidence
 
@@ -46,13 +46,14 @@ The deterministic `pnpm demo:run` path must report participate, no fixture payme
 
 Current local result snapshot:
 
-- Foundry: 25 passed, including 256 winner and 256 no-winner conservation fuzz runs.
-- Unit: shared 7, agent 25, web 3; all passed.
+- Foundry: 28 passed, including 256 winner and 256 no-winner conservation fuzz runs and the finalist-cap boundary cases.
+- Unit: shared 11, agent 31, web 3; all passed.
 - x402 integration/config: 5 passed after allowing its loopback test listener.
 - Strict TypeScript: all seven TypeScript workspaces passed.
 - ESLint, Prettier, Solidity format, contract size build, and Next.js production build passed.
 - Playwright: eight desktop/mobile cases passed, covering create, winner, no-winner, and mobile overflow paths.
 - Fixture demo: participate, `paymentOccurred: false`, exact seeded hash, qualified, no onchain submission.
+- Fixture demo before/after the purchased analysis: 72.00% → 64.50% qualification prior, 0.080 → 0.110 USDC build-cost estimate, 68.26 → 61.105 USDC expected value, with each adjustment itemised in basis points.
 
 ## Pending real evidence
 

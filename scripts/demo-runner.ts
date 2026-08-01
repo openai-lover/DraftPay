@@ -51,7 +51,18 @@ console.log(
     {
       evidenceMode: seed.evidenceMode,
       decision: result.decision.decision,
-      expectedValueAtomic: result.decision.metrics.expectedValueAtomic,
+      beforePaidAnalysis: {
+        qualificationProbabilityBps: result.quotedDecision?.metrics.qualificationProbabilityBps,
+        generationCostAtomic: result.quotedDecision?.metrics.estimatedGenerationCostAtomic,
+        expectedValueAtomic: result.quotedDecision?.metrics.expectedValueAtomic,
+      },
+      afterPaidAnalysis: {
+        qualificationProbabilityBps: result.decision.metrics.qualificationProbabilityBps,
+        generationCostAtomic: result.decision.metrics.estimatedGenerationCostAtomic,
+        expectedValueAtomic: result.decision.metrics.expectedValueAtomic,
+      },
+      probabilityAdjustments: result.probability?.adjustments,
+      x402QuotedAmountAtomic: result.analysis?.payment.quotedAmountAtomic,
       x402PaymentOccurred: result.analysis?.payment.paymentOccurred,
       artifactHash: result.artifact.contentHash,
       qualified: result.verification.qualified,

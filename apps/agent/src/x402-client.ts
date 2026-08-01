@@ -12,6 +12,8 @@ import type { SpendingPolicy } from "./spending-policy";
 export interface ToolPaymentEvidence {
   mode: "fixture" | "real";
   paymentOccurred: boolean;
+  /** The price the seller advertised over x402, whether or not it was ultimately paid. */
+  quotedAmountAtomic: string;
   amountAtomic: string;
   network: "eip155:5042002";
   payer: string | null;
@@ -74,7 +76,7 @@ export class CircleGatewayX402Client implements X402BriefClient {
 
   async analyze(request: BriefAnalysisRequest): Promise<PaidBriefAnalysisResult> {
     const parsed = briefAnalysisRequestSchema.parse(request);
-    await this.quote();
+    const quoted = await this.quote();
 
     const result = await this.#gateway.pay<BriefAnalysisResponse>(this.serviceUrl, {
       method: "POST",
@@ -92,6 +94,7 @@ export class CircleGatewayX402Client implements X402BriefClient {
       payment: {
         mode: "real",
         paymentOccurred: true,
+        quotedAmountAtomic: quoted,
         amountAtomic: result.amount.toString(),
         network: "eip155:5042002",
         payer: this.#gateway.address,
@@ -103,11 +106,20 @@ export class CircleGatewayX402Client implements X402BriefClient {
   }
 }
 
+/**
+ * Mirrors the seller's advertised $0.01 price so the fixture path exercises a genuinely priced
+ * decision. No payment is made and `amountAtomic` stays zero, which keeps the evidence honest.
+ */
+export const FIXTURE_ADVERTISED_PRICE_ATOMIC = "10000";
+
 export class FixtureX402Client implements X402BriefClient {
-  constructor(private readonly serviceUrl = "fixture://brief-analysis") {}
+  constructor(
+    private readonly serviceUrl = "fixture://brief-analysis",
+    private readonly advertisedPriceAtomic = FIXTURE_ADVERTISED_PRICE_ATOMIC,
+  ) {}
 
   async quote(): Promise<string> {
-    return "0";
+    return this.advertisedPriceAtomic;
   }
 
   async analyze(request: BriefAnalysisRequest): Promise<PaidBriefAnalysisResult> {
@@ -116,6 +128,7 @@ export class FixtureX402Client implements X402BriefClient {
       payment: {
         mode: "fixture",
         paymentOccurred: false,
+        quotedAmountAtomic: this.advertisedPriceAtomic,
         amountAtomic: "0",
         network: "eip155:5042002",
         payer: null,

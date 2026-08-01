@@ -7,7 +7,7 @@ import {
 import { isAddress, isHex, type Hex } from "viem";
 import { artifactPublicUri, storeArtifact } from "./artifact-store";
 import { appendEvidence } from "./evidence-store";
-import { FixtureModelAdapter } from "./model-adapter";
+import { createModelAdapter } from "./model-adapter";
 import { readContestOnArc } from "./read-contest";
 import { runBuilderAgent } from "./runner";
 import { SpendingPolicy } from "./spending-policy";
@@ -71,7 +71,7 @@ const result = await runBuilderAgent({
     spentTodayAtomic: "0",
     availableTools: ["static-page-generator", "deterministic-verifier", "x402-client"],
   },
-  model: new FixtureModelAdapter(),
+  model: createModelAdapter(),
   x402,
   knownContentHashes: [],
 });
@@ -83,6 +83,11 @@ await appendEvidence({
     decision: result.decision.decision,
     reasons: result.decision.reasons,
     metrics: result.decision.metrics,
+    quotedDecision: result.quotedDecision
+      ? { decision: result.quotedDecision.decision, metrics: result.quotedDecision.metrics }
+      : null,
+    probability: result.probability,
+    abandonedAfterPaidAnalysis: result.abandonedAfterPaidAnalysis,
   },
 });
 if (result.analysis) {
