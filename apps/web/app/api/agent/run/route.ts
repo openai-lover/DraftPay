@@ -45,11 +45,15 @@ export async function POST(request: Request) {
     const realX402 = process.env.X402_MODE === "real";
     const privateKey = process.env.AGENT_PRIVATE_KEY;
     const targetContest = process.env.AGENT_SUBMIT_CONTEST_ADDRESS;
-    if (realX402 || targetContest) {
+    const hosted = process.env.VERCEL === "1";
+    if (hosted || realX402 || targetContest) {
       const runToken = process.env.AGENT_RUN_TOKEN;
       if (!runToken) {
         return Response.json(
-          { error: "AGENT_RUN_TOKEN is required before enabling privileged web agent runs" },
+          {
+            error:
+              "AGENT_RUN_TOKEN is required before enabling hosted or privileged web agent runs",
+          },
           { status: 503 },
         );
       }

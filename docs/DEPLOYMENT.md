@@ -111,6 +111,12 @@ pnpm gateway:check
 pnpm gateway:deposit
 ```
 
+For a public Vercel deployment, omit all deployer, builder, and evaluator private keys. Hosted
+`/api/agent/run` requests fail closed unless `AGENT_RUN_TOKEN` is configured and supplied as a
+Bearer token. The public judging app can therefore remain read-only while funded Testnet actions
+run only from the local operator environment. The x402 seller service needs only the public seller
+address; it never needs the seller wallet private key.
+
 ## 6. Execute both outcomes
 
 - Winner contest: connect the client in Compare, select a qualified finalist, confirm the wallet action, and verify the Receipt page against ArcScan.
