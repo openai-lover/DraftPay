@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+// Keep this runtime module self-contained because Vercel's zero-config Express function preserves
+// external imports instead of bundling a linked workspace package into the function artifact.
 export const briefAnalysisRequestSchema = z.object({
   brief: z.string().min(20).max(4_000),
   requirements: z.array(z.string().min(1).max(160)).min(1).max(16),
