@@ -5,7 +5,7 @@ import {
   analyzeBrief,
   briefAnalysisRequestSchema,
   type BriefAnalysisRequest,
-} from "./analysis";
+} from "./analysis.js";
 
 type PaidRequest = Request & {
   payment?: {
