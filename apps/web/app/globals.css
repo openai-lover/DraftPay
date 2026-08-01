@@ -194,6 +194,22 @@ textarea:focus-visible {
   align-items: center;
   gap: 8px;
 }
+.wallet-connect-state {
+  position: relative;
+}
+.wallet-connect-error {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  width: min(320px, 80vw);
+  border: 1px solid #efb5b0;
+  border-radius: 8px;
+  padding: 7px 9px;
+  background: #fff0ef;
+  color: var(--danger);
+  font-size: 11px;
+  line-height: 1.35;
+}
 .wallet-address {
   border: 1px solid var(--line);
   border-radius: 9px;
@@ -822,6 +838,17 @@ textarea:focus-visible {
   object-position: top;
   border-bottom: 1px solid var(--line);
   background: #e7ebf0;
+}
+.submission__preview {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  pointer-events: none;
+}
+.submission__preview-placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--ink-soft);
+  font-size: 12px;
 }
 .submission__body {
   padding: 18px;

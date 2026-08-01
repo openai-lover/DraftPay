@@ -28,7 +28,7 @@ export interface PaidBriefAnalysisResult {
 }
 
 export interface X402BriefClient {
-  quote(): Promise<string>;
+  quote(request: BriefAnalysisRequest): Promise<string>;
   analyze(request: BriefAnalysisRequest): Promise<PaidBriefAnalysisResult>;
 }
 
@@ -58,13 +58,31 @@ export class CircleGatewayX402Client implements X402BriefClient {
     this.#gateway = new GatewayClient({ chain: "arcTestnet", privateKey });
   }
 
-  async quote(): Promise<string> {
-    const support = await this.#gateway.supports(this.serviceUrl);
-    if (!support.supported || !support.requirements) {
-      throw new Error(support.error ?? "Service does not advertise Circle Gateway support");
+  async quote(request: BriefAnalysisRequest): Promise<string> {
+    const parsed = briefAnalysisRequestSchema.parse(request);
+    const response = await fetch(this.serviceUrl, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(parsed),
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (response.status !== 402) {
+      throw new Error(
+        `Resource does not require payment (expected 402, received ${response.status})`,
+      );
+    }
+    const encodedRequirements = response.headers.get("payment-required");
+    if (!encodedRequirements) {
+      throw new Error("x402 response did not include Payment-Required");
+    }
+    let requirements: unknown;
+    try {
+      requirements = JSON.parse(Buffer.from(encodedRequirements, "base64").toString("utf8"));
+    } catch {
+      throw new Error("x402 Payment-Required header was not valid base64 JSON");
     }
     const quotedAmounts: bigint[] = [];
-    collectAtomicAmounts(support.requirements, quotedAmounts);
+    collectAtomicAmounts(requirements, quotedAmounts);
     if (quotedAmounts.length === 0)
       throw new Error("x402 response did not contain an atomic price");
     const quoted = quotedAmounts.reduce((highest, current) =>
@@ -76,12 +94,11 @@ export class CircleGatewayX402Client implements X402BriefClient {
 
   async analyze(request: BriefAnalysisRequest): Promise<PaidBriefAnalysisResult> {
     const parsed = briefAnalysisRequestSchema.parse(request);
-    const quoted = await this.quote();
+    const quoted = await this.quote(parsed);
 
     const result = await this.#gateway.pay<BriefAnalysisResponse>(this.serviceUrl, {
       method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(parsed),
+      body: parsed,
     });
     if (result.status < 200 || result.status >= 300) {
       throw new Error(`Paid service returned ${result.status}`);
@@ -118,7 +135,7 @@ export class FixtureX402Client implements X402BriefClient {
     private readonly advertisedPriceAtomic = FIXTURE_ADVERTISED_PRICE_ATOMIC,
   ) {}
 
-  async quote(): Promise<string> {
+  async quote(_request: BriefAnalysisRequest): Promise<string> {
     return this.advertisedPriceAtomic;
   }
 

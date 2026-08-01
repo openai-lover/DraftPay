@@ -10,11 +10,14 @@
   "scripts": {
     "start": "tsx src/cli.ts",
     "evaluate:arc": "tsx src/evaluate-cli.ts",
+    "gateway:check": "tsx src/gateway-cli.ts",
+    "gateway:deposit": "tsx src/gateway-cli.ts --deposit",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "build": "tsc --noEmit"
   },
   "dependencies": {
+    "@playwright/test": "1.61.1",
     "@circle-fin/x402-batching": "3.2.0",
     "@draftpay/chain": "workspace:*",
     "@draftpay/shared": "workspace:*",

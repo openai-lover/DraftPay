@@ -1,8 +1,7 @@
-import { createApp } from "./app";
+import app from "./index";
 import { readServiceConfig } from "./config";
 
 const config = readServiceConfig();
-const app = createApp(config.app);
 
 app.listen(config.port, () => {
   console.log(

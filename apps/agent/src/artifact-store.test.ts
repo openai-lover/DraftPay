@@ -3,7 +3,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { keccak256, toBytes } from "viem";
-import { artifactPublicUri, readStoredArtifact, storeArtifact } from "./artifact-store";
+import {
+  artifactPublicUri,
+  listStoredArtifactHashes,
+  readStoredArtifact,
+  storeArtifact,
+} from "./artifact-store";
 
 let directory: string | null = null;
 
@@ -30,6 +35,7 @@ describe("artifact evidence store", () => {
       directory,
     );
     expect(await readStoredArtifact(contentHash, directory)).toBe(html);
+    expect(await listStoredArtifactHashes(directory)).toEqual([contentHash]);
     expect(stored.screenshotPath).toBeNull();
     expect(await readFile(stored.metadataPath, "utf8")).toContain('"status": "not-captured"');
   });

@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { hashSchema, type VerificationCheck } from "@draftpay/shared";
@@ -75,6 +75,20 @@ export async function readStoredArtifact(
   const contentHash = hashSchema.parse(contentHashInput).toLowerCase();
   const path = resolve(artifactDirectory(configuredPath), `${contentHash.slice(2)}.html`);
   return readFile(path, "utf8");
+}
+
+export async function listStoredArtifactHashes(
+  configuredPath = process.env.DRAFTPAY_ARTIFACT_PATH,
+): Promise<string[]> {
+  try {
+    const entries = await readdir(artifactDirectory(configuredPath));
+    return entries
+      .filter((entry) => /^[a-f\d]{64}\.json$/i.test(entry))
+      .map((entry) => `0x${entry.slice(0, -5).toLowerCase()}`);
+  } catch (cause) {
+    if ((cause as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw cause;
+  }
 }
 
 export function artifactPublicUri(contentHashInput: string, baseUrl: string | undefined): string {

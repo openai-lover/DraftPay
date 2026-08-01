@@ -5,7 +5,7 @@ import {
   type ContestSummary,
 } from "@draftpay/shared";
 import { isAddress, isHex, type Hex } from "viem";
-import { artifactPublicUri, storeArtifact } from "./artifact-store";
+import { artifactPublicUri, listStoredArtifactHashes, storeArtifact } from "./artifact-store";
 import { appendEvidence } from "./evidence-store";
 import { createModelAdapter } from "./model-adapter";
 import { readContestOnArc } from "./read-contest";
@@ -73,7 +73,7 @@ const result = await runBuilderAgent({
   },
   model: createModelAdapter(),
   x402,
-  knownContentHashes: [],
+  knownContentHashes: targetContest ? await listStoredArtifactHashes() : [],
 });
 
 await appendEvidence({

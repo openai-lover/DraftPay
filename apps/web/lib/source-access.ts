@@ -4,7 +4,7 @@ interface SourceChallenge {
   address: string;
   contest: string;
   transactionHash: string;
-  slug: "northstar" | "mina" | "kite";
+  submissionId: string;
   message: string;
   expiresAt: number;
 }
@@ -31,7 +31,7 @@ export function issueSourceChallenge(input: Omit<SourceChallenge, "message" | "e
     `Address: ${input.address}`,
     `Contest: ${input.contest}`,
     `Settlement: ${input.transactionHash}`,
-    `Artifact: ${input.slug}`,
+    `Winner submission: ${input.submissionId}`,
     `Nonce: ${nonce}`,
     `Expires: ${new Date(expiresAt).toISOString()}`,
   ].join("\n");

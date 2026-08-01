@@ -80,7 +80,7 @@ Open `http://localhost:3000`, then use Explore → contest → Compare for the w
 
 - `real` means a successful Arc receipt or a settled Circle Gateway payment produced and verified at runtime.
 - `fixture` means deterministic local data prepared for a reliable judge path. Fixture addresses are actors only; fixture receipts are rule previews; `paymentOccurred` is false.
-- This workspace currently contains no deployed DraftPay address, Arc transaction, Circle payment ID, or public deployment URL because it has no funded wallet, Circle balance, or hosting login.
+- Real evidence now includes the deployed factory, two funded Arc contests, a funded Circle Gateway buyer, a settled x402 payment, and a zero-submission 5-USDC refund settlement. The paid test used the explicitly labeled fixture generator, so real-model generation, onchain submission, evaluator writes, winner/finalist settlement, and public hosting remain pending and are never substituted with fixtures.
 
 ### 9. What remains stretch?
 

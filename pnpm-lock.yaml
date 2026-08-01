@@ -43,6 +43,9 @@ importers:
       "@draftpay/shared":
         specifier: workspace:*
         version: link:../../packages/shared
+      "@playwright/test":
+        specifier: 1.61.1
+        version: 1.61.1
       viem:
         specifier: 2.55.4
         version: 2.55.4(typescript@6.0.3)(zod@4.4.3)

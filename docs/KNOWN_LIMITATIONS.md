@@ -1,19 +1,16 @@
 # Known Limitations and Manual Steps
 
-Last updated: 2026-07-31
+Last updated: 2026-08-01
 
 ## Exact external actions still required
 
-1. Fund and unlock a human-controlled Arc Testnet deployer.
-2. Run `pnpm contracts:deploy:arc`; capture and verify the factory receipt/address.
-3. Create and fund two real contests, one for each terminal outcome.
-4. Supply dedicated evaluator and builder/agent Testnet EOAs.
-5. Configure and fund Circle Gateway Nanopayments; produce one genuine settled payment ID.
-6. Log into Vercel, link the monorepo web project with root `apps/web`, add production environment values, and run `pnpm web:deploy`.
-7. Deploy the x402 service to a Node-compatible host and point the web/agent configuration to it.
-8. Execute winner and no-winner settlements and retain the successful ArcScan links.
+Completed on Arc Testnet: dedicated deployer/builder/evaluator funding, factory deployment, two funded contests, a 1-USDC builder deposit into Circle Gateway, a settled 0.01-USDC x402 request, and a zero-submission 5-USDC refund settlement.
 
-No item above is represented as complete in this repository.
+1. Deploy the x402 service to a Node-compatible host and point the web/agent configuration to it.
+2. Configure a real model provider, create a unique artifact, and submit it onchain with a public URI.
+3. Execute evaluator qualification/ranking for the real submissions.
+4. Log into Vercel, link the monorepo web project with root `apps/web`, add production environment values, and run `pnpm web:deploy`.
+5. Execute winner and finalist-bearing 15/10/5 no-winner settlements and retain the successful ArcScan links.
 
 ## Product limitations
 
@@ -40,7 +37,7 @@ No item above is represented as complete in this repository.
   priced, but records `paymentOccurred: false` and `amountAtomic: "0"` because nothing settled.
 - Seeded settlement receipts are payout previews, not transactions.
 - Real receipt UI requires a valid transaction hash and contest address, then validates the Arc receipt before showing a Real badge.
-- There are currently no DraftPay contract addresses, ArcScan transaction links, real x402 receipt IDs, or public deployment URLs to report.
+- A real factory, two funded contests, a settled x402 payment ID, and a zero-submission refund receipt exist. Artifact submission, evaluator/winner/finalist-settlement receipts, and public deployment URLs are still pending.
 
 ## Browser verification
 
