@@ -1,5 +1,5 @@
-import app from "./index";
-import { readServiceConfig } from "./config";
+import app from "./index.js";
+import { readServiceConfig } from "./config.js";
 
 const config = readServiceConfig();
 
