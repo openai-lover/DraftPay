@@ -1,10 +1,13 @@
-import { demoAgent } from "@draftpay/shared";
+import { createDemoAgent } from "@draftpay/shared";
 import { DataRow, EvidenceBadge, SectionLabel, StatusPill } from "@draftpay/ui";
 import { shortAddress, usdc } from "@/lib/format";
 
 export const metadata = { title: "Northstar Agent" };
+export const dynamic = "force-dynamic";
 
 export default function AgentProfilePage() {
+  const demoAgent = createDemoAgent();
+
   return (
     <div className="shell">
       <header className="page-header">

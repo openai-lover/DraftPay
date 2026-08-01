@@ -1,14 +1,32 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { createDemoContest } from "@draftpay/shared";
+import { createDemoContests, type ContestLifecycleState } from "@draftpay/shared";
 import { EvidenceBadge, SectionLabel, StatusPill } from "@draftpay/ui";
-import { displayDate, usdc } from "@/lib/format";
+import { relativeTime, usdc } from "@/lib/format";
 
 export const metadata = { title: "Explore contests" };
 export const dynamic = "force-dynamic";
 
+function statePresentation(state: ContestLifecycleState): {
+  label: string;
+  tone: "blue" | "amber" | "teal" | "neutral";
+} {
+  switch (state) {
+    case "submission-open":
+      return { label: "Accepting builds", tone: "teal" };
+    case "evaluation":
+      return { label: "In verification", tone: "amber" };
+    case "awaiting-selection":
+      return { label: "Ready to select", tone: "blue" };
+    case "settled-with-winner":
+      return { label: "Winner preview", tone: "neutral" };
+    default:
+      return { label: state.replaceAll("-", " "), tone: "neutral" };
+  }
+}
+
 export default function ContestsPage() {
-  const demoContest = createDemoContest();
+  const contests = createDemoContests();
 
   return (
     <div className="shell">
@@ -21,37 +39,49 @@ export default function ContestsPage() {
         </div>
       </header>
       <section aria-label="Contest list">
-        <div className="contest-row">
-          <div>
-            <EvidenceBadge mode={demoContest.mode} />
-            <h2>{demoContest.title}</h2>
-            <p>{demoContest.brief.slice(0, 116)}…</p>
-          </div>
-          <div>
-            <span className="metric-label">Prize</span>
-            <span className="metric-value">{usdc(demoContest.prizeAtomic)}</span>
-          </div>
-          <div>
-            <span className="metric-label">Qualified</span>
-            <span className="metric-value">{demoContest.qualifiedCount} / 3</span>
-          </div>
-          <div>
-            <span className="metric-label">Select by</span>
-            <small>{displayDate(demoContest.selectionDeadline)}</small>
-          </div>
-          <Link
-            className="button button--secondary"
-            href={`/contests/${demoContest.id}`}
-            aria-label={`Open ${demoContest.title}`}
-          >
-            <ArrowUpRight size={16} />
-          </Link>
-        </div>
+        {contests.map((contest) => {
+          const presentation = statePresentation(contest.state);
+
+          return (
+            <div className="contest-row" key={contest.id}>
+              <div>
+                <div className="contest-row__meta">
+                  <EvidenceBadge mode={contest.mode} />
+                  <span>
+                    {contest.clientName} · updated {relativeTime(contest.updatedAt)}
+                  </span>
+                </div>
+                <h2>{contest.title}</h2>
+                <p>{contest.activityLabel}</p>
+              </div>
+              <div>
+                <span className="metric-label">Prize rule</span>
+                <span className="metric-value">{usdc(contest.prizeAtomic)}</span>
+              </div>
+              <div>
+                <span className="metric-label">Builder activity</span>
+                <span className="metric-value">{contest.submissionCount} entries</span>
+                <small>{contest.qualifiedCount} qualified</small>
+              </div>
+              <div>
+                <span className="metric-label">Demo state</span>
+                <StatusPill tone={presentation.tone}>{presentation.label}</StatusPill>
+              </div>
+              <Link
+                className="button button--secondary"
+                href={`/contests/${contest.id}`}
+                aria-label={`Open ${contest.title}`}
+              >
+                <ArrowUpRight size={16} />
+              </Link>
+            </div>
+          );
+        })}
       </section>
       <div style={{ padding: "48px 0 96px" }}>
         <div className="notice notice--amber">
-          This list is seeded demonstration data. A configured factory address enables real contest
-          creation; fixture rows never claim a contract or transaction.
+          Seeded demo data. The activity, prize rules, and outcomes above are fictional product
+          scenarios; fixture rows never claim a contract, payment, or transaction.
         </div>
       </div>
     </div>
