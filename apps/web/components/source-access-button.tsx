@@ -18,11 +18,9 @@ export function SourceAccessButton({
   const { signMessageAsync } = useSignMessage();
   const [status, setStatus] = useState<"idle" | "pending" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
-  const slugs = ["northstar", "mina", "kite"] as const;
-  const slug = slugs[Number(winnerSubmissionId) - 1];
 
   async function downloadSource() {
-    if (!account.address || !slug) return;
+    if (!account.address) return;
     setStatus("pending");
     setError(null);
     try {
@@ -33,7 +31,7 @@ export function SourceAccessButton({
           address: account.address,
           contest: contestAddress,
           transactionHash,
-          slug,
+          submissionId: winnerSubmissionId.toString(),
         }),
       });
       const challenge = (await challengeResponse.json()) as {
@@ -57,7 +55,7 @@ export function SourceAccessButton({
       const blobUrl = URL.createObjectURL(await downloadResponse.blob());
       const link = document.createElement("a");
       link.href = blobUrl;
-      link.download = `draftpay-${slug}-source.html`;
+      link.download = `draftpay-submission-${winnerSubmissionId}-source.html`;
       link.click();
       URL.revokeObjectURL(blobUrl);
       setStatus("idle");
@@ -68,7 +66,6 @@ export function SourceAccessButton({
     }
   }
 
-  if (!slug) return null;
   return (
     <div style={{ marginTop: 18 }}>
       <button

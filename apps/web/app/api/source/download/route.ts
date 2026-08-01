@@ -4,13 +4,15 @@ import {
   assertArcTestnet,
   draftPayContestAbi,
 } from "@draftpay/chain";
-import { preparedArtifacts } from "@draftpay/shared";
+import { readStoredArtifact } from "@draftpay/agent";
 import { consumeSourceChallenge } from "@/lib/source-access";
 import {
   createPublicClient,
   getAddress,
   http,
+  keccak256,
   parseEventLogs,
+  toBytes,
   verifyMessage,
   type Address,
   type Hash,
@@ -20,7 +22,6 @@ import { z } from "zod";
 
 export const runtime = "nodejs";
 
-const submissionBySlug = { northstar: 1n, mina: 2n, kite: 3n } as const;
 const requestSchema = z.object({
   nonce: z.string().uuid(),
   signature: z.string().regex(/^0x[\da-fA-F]+$/),
@@ -48,9 +49,16 @@ export async function POST(request: Request) {
   assertArcTestnet(await client.getChainId());
   const contest = challenge.contest as Address;
   const transactionHash = challenge.transactionHash as Hash;
-  const [receipt, contestClient] = await Promise.all([
+  const submissionId = BigInt(challenge.submissionId);
+  const [receipt, contestClient, submission] = await Promise.all([
     client.getTransactionReceipt({ hash: transactionHash }),
     client.readContract({ address: contest, abi: draftPayContestAbi, functionName: "client" }),
+    client.readContract({
+      address: contest,
+      abi: draftPayContestAbi,
+      functionName: "getSubmission",
+      args: [submissionId],
+    }),
   ]);
   if (
     receipt.status !== "success" ||
@@ -68,18 +76,32 @@ export async function POST(request: Request) {
 
   const events = parseEventLogs({ abi: draftPayContestAbi, logs: receipt.logs, strict: false });
   const winnerEvent = events.find((event) => event.eventName === "WinnerSettled");
-  if (!winnerEvent || winnerEvent.args.winnerSubmissionId !== submissionBySlug[challenge.slug]) {
+  if (!winnerEvent || winnerEvent.args.winnerSubmissionId !== submissionId) {
     return Response.json(
       { error: "Requested artifact is not the settled winner" },
       { status: 403 },
     );
   }
 
-  const source = preparedArtifacts[challenge.slug];
+  let source: string;
+  try {
+    source = await readStoredArtifact(submission.deliverableHash);
+  } catch {
+    return Response.json(
+      { error: "Winner source is not available in artifact storage" },
+      { status: 404 },
+    );
+  }
+  if (keccak256(toBytes(source)) !== submission.deliverableHash) {
+    return Response.json(
+      { error: "Stored source does not match the onchain winner hash" },
+      { status: 409 },
+    );
+  }
   return new Response(source, {
     headers: {
       "cache-control": "no-store",
-      "content-disposition": `attachment; filename="draftpay-${challenge.slug}-source.html"`,
+      "content-disposition": `attachment; filename="draftpay-submission-${submissionId}-source.html"`,
       "content-type": "text/html; charset=utf-8",
       "x-content-type-options": "nosniff",
     },

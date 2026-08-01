@@ -1,21 +1,73 @@
 "use client";
 
 import { ARC_TESTNET_CHAIN_ID, draftPayContestAbi } from "@draftpay/chain";
-import { demoSubmissions } from "@draftpay/shared";
+import { demoSubmissions, type VerificationCheck } from "@draftpay/shared";
 import { EvidenceBadge, StatusPill } from "@draftpay/ui";
 import { CheckCircle2, ExternalLink, LoaderCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { isAddress, type Address } from "viem";
+import { useEffect, useMemo, useState } from "react";
+import { isAddress, type Address, type Hex } from "viem";
 import { useAccount, useChainId, usePublicClient, useWriteContract } from "wagmi";
 import { shortAddress, usdc } from "@/lib/format";
+
+interface ComparedSubmission {
+  key: string;
+  onchainId: bigint | null;
+  mode: "fixture" | "real";
+  builderName: string;
+  builderKind: string;
+  builderAddress: string;
+  title: string;
+  rationale: string;
+  previewPath: string | null;
+  screenshotPath: string | null;
+  contentHash: string;
+  rank: number;
+  verificationScore: number | null;
+  verificationChecks: VerificationCheck[];
+  toolCostAtomic: string | null;
+  deliveryMinutes: number | null;
+}
+
+function safePreviewUrl(metadataUri: string): string | null {
+  try {
+    const url = new URL(metadataUri, window.location.origin);
+    if (url.protocol === "https:" || (url.protocol === "http:" && url.hostname === "localhost")) {
+      return url.toString();
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+const fixtureSubmissions: ComparedSubmission[] = demoSubmissions.map((submission) => ({
+  key: submission.id,
+  onchainId: null,
+  mode: submission.mode,
+  builderName: submission.builderName,
+  builderKind: submission.builderKind,
+  builderAddress: submission.builderAddress,
+  title: submission.title,
+  rationale: submission.rationale,
+  previewPath: submission.previewPath,
+  screenshotPath: submission.screenshotPath,
+  contentHash: submission.contentHash,
+  rank: submission.rank,
+  verificationScore: submission.verificationScore,
+  verificationChecks: submission.verificationChecks,
+  toolCostAtomic: submission.toolCostAtomic,
+  deliveryMinutes: submission.deliveryMinutes,
+}));
 
 export function SubmissionComparison() {
   const [selected, setSelected] = useState(0);
   const [status, setStatus] = useState<"idle" | "pending" | "error">("idle");
+  const [loadStatus, setLoadStatus] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [onchainSubmissions, setOnchainSubmissions] = useState<ComparedSubmission[]>([]);
   const router = useRouter();
   const account = useAccount();
   const chainId = useChainId();
@@ -23,10 +75,101 @@ export function SubmissionComparison() {
   const { writeContractAsync } = useWriteContract();
   const configured = process.env.NEXT_PUBLIC_DEMO_CONTEST_ADDRESS;
   const contestAddress: Address | null = configured && isAddress(configured) ? configured : null;
-  const selectedSubmission = demoSubmissions[selected]!;
+
+  useEffect(() => {
+    let active = true;
+    async function loadFinalists() {
+      if (!contestAddress || !publicClient) return;
+      setLoadStatus("loading");
+      setError(null);
+      try {
+        const [rankedIds, count] = await publicClient.readContract({
+          address: contestAddress,
+          abi: draftPayContestAbi,
+          functionName: "getRankedFinalists",
+        });
+        const finalistIds = rankedIds.slice(0, Number(count)).filter((id) => id !== 0n);
+        const submissions = await Promise.all(
+          finalistIds.map(async (submissionId): Promise<ComparedSubmission> => {
+            const submission = await publicClient.readContract({
+              address: contestAddress,
+              abi: draftPayContestAbi,
+              functionName: "getSubmission",
+              args: [submissionId],
+            });
+            const previewPath = safePreviewUrl(submission.metadataURI);
+            return {
+              key: submissionId.toString(),
+              onchainId: submissionId,
+              mode: "real",
+              builderName: `Builder ${shortAddress(submission.builder, 5)}`,
+              builderKind: "onchain wallet",
+              builderAddress: submission.builder,
+              title: `Submission #${submissionId}`,
+              rationale: previewPath
+                ? "Artifact URI and content hash were read directly from Arc."
+                : "The onchain artifact URI is not an allowed HTTPS preview URL.",
+              previewPath,
+              screenshotPath: null,
+              contentHash: submission.deliverableHash as Hex,
+              rank: submission.rank,
+              verificationScore: null,
+              verificationChecks: [
+                {
+                  id: `qualified-${submissionId}`,
+                  label: "Qualified by configured evaluator",
+                  passed: submission.qualified,
+                  detail: "Qualification read from the contest contract",
+                  hardFailure: false,
+                },
+                {
+                  id: `finalist-${submissionId}`,
+                  label: `Ranked finalist #${submission.rank}`,
+                  passed: submission.finalistEligible && submission.rank > 0,
+                  detail: "Finalist eligibility and rank read from Arc",
+                  hardFailure: false,
+                },
+                {
+                  id: `hash-${submissionId}`,
+                  label: "Artifact hash bound onchain",
+                  passed: submission.deliverableHash !== `0x${"0".repeat(64)}`,
+                  detail: submission.deliverableHash,
+                  hardFailure: false,
+                },
+              ],
+              toolCostAtomic: null,
+              deliveryMinutes: null,
+            };
+          }),
+        );
+        if (active) {
+          setOnchainSubmissions(submissions);
+          setSelected(0);
+          setLoadStatus("idle");
+        }
+      } catch (cause) {
+        if (active) {
+          setOnchainSubmissions([]);
+          setError(cause instanceof Error ? cause.message : "Could not load Arc finalists");
+          setLoadStatus("error");
+        }
+      }
+    }
+    void loadFinalists();
+    return () => {
+      active = false;
+    };
+  }, [contestAddress, publicClient]);
+
+  const submissions = useMemo(
+    () => (contestAddress ? onchainSubmissions : fixtureSubmissions),
+    [contestAddress, onchainSubmissions],
+  );
+  const selectedSubmission = submissions[selected] ?? null;
 
   async function selectWinner() {
-    if (!contestAddress || !account.address || !publicClient) return;
+    if (!contestAddress || !account.address || !publicClient || !selectedSubmission?.onchainId)
+      return;
     setStatus("pending");
     setError(null);
     try {
@@ -34,7 +177,7 @@ export function SubmissionComparison() {
         address: contestAddress,
         abi: draftPayContestAbi,
         functionName: "selectWinner",
-        args: [BigInt(selected + 1)],
+        args: [selectedSubmission.onchainId],
         account: account.address,
         chainId: ARC_TESTNET_CHAIN_ID,
       });
@@ -53,7 +196,10 @@ export function SubmissionComparison() {
   }
 
   const writeEnabled = Boolean(
-    contestAddress && account.isConnected && chainId === ARC_TESTNET_CHAIN_ID,
+    contestAddress &&
+    selectedSubmission?.onchainId &&
+    account.isConnected &&
+    chainId === ARC_TESTNET_CHAIN_ID,
   );
 
   return (
@@ -61,11 +207,18 @@ export function SubmissionComparison() {
       <div className="compare-toolbar">
         <div>
           <p>
-            <strong>Selected: {selectedSubmission.builderName}</strong>
+            <strong>
+              {selectedSubmission ? `Selected: ${selectedSubmission.builderName}` : "No finalists"}
+            </strong>
           </p>
-          <p style={{ color: "var(--ink-soft)", fontSize: 12 }}>
-            Rank {selectedSubmission.rank} · {selectedSubmission.verificationScore}% verification
-          </p>
+          {selectedSubmission && (
+            <p style={{ color: "var(--ink-soft)", fontSize: 12 }}>
+              Rank {selectedSubmission.rank} ·{" "}
+              {selectedSubmission.verificationScore === null
+                ? "verified onchain finalist"
+                : `${selectedSubmission.verificationScore}% fixture verification`}
+            </p>
+          )}
         </div>
         <button
           className="button"
@@ -73,16 +226,28 @@ export function SubmissionComparison() {
           disabled={!writeEnabled || status === "pending"}
           onClick={selectWinner}
         >
-          {status === "pending" && <LoaderCircle size={16} className="animate-spin" />}
+          {(status === "pending" || loadStatus === "loading") && (
+            <LoaderCircle size={16} className="animate-spin" />
+          )}
           {contestAddress
-            ? `Select ${selectedSubmission.builderName}`
+            ? selectedSubmission
+              ? `Select submission #${selectedSubmission.onchainId}`
+              : "Waiting for ranked finalists"
             : "Select winner · real contract required"}
         </button>
       </div>
       {!contestAddress && (
         <p className="notice notice--amber">
-          Comparison data is seeded. Configure a real evaluated contest address to enable the
-          client-signed `selectWinner` transaction.
+          Comparison data is seeded. Configure a real evaluated contest address to load finalists
+          and their artifact hashes directly from Arc.
+        </p>
+      )}
+      {contestAddress && loadStatus === "loading" && (
+        <p className="notice">Loading ranked finalists and submissions from Arc Testnet…</p>
+      )}
+      {contestAddress && loadStatus === "idle" && submissions.length === 0 && (
+        <p className="notice notice--amber">
+          This contest has no ranked finalists yet. Winner selection remains disabled.
         </p>
       )}
       {contestAddress && !account.isConnected && (
@@ -94,19 +259,33 @@ export function SubmissionComparison() {
         </p>
       )}
       <div className="compare-grid">
-        {demoSubmissions.map((submission, index) => (
+        {submissions.map((submission, index) => (
           <article
             className={`submission${selected === index ? " submission--selected" : ""}`}
-            key={submission.id}
+            key={submission.key}
           >
-            <Image
-              className="submission__image"
-              src={submission.screenshotPath}
-              alt={`${submission.title} landing-page screenshot`}
-              width={1200}
-              height={900}
-              priority={index === 0}
-            />
+            {submission.screenshotPath ? (
+              <Image
+                className="submission__image"
+                src={submission.screenshotPath}
+                alt={`${submission.title} landing-page screenshot`}
+                width={1200}
+                height={900}
+                priority={index === 0}
+              />
+            ) : submission.previewPath ? (
+              <iframe
+                className="submission__image submission__preview"
+                src={submission.previewPath}
+                title={`${submission.title} sandboxed preview`}
+                sandbox=""
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="submission__image submission__preview-placeholder">
+                Preview unavailable
+              </div>
+            )}
             <div className="submission__body">
               <div className="submission__head">
                 <div>
@@ -121,16 +300,22 @@ export function SubmissionComparison() {
               <p>{submission.rationale}</p>
               <div className="submission__metrics">
                 <div className="submission__metric">
-                  <span>Checks</span>
-                  <strong>{submission.verificationScore}%</strong>
+                  <span>Rank</span>
+                  <strong>#{submission.rank}</strong>
                 </div>
                 <div className="submission__metric">
-                  <span>Tool cost</span>
-                  <strong>{usdc(submission.toolCostAtomic)}</strong>
+                  <span>{submission.toolCostAtomic ? "Tool cost" : "Evidence"}</span>
+                  <strong>
+                    {submission.toolCostAtomic ? usdc(submission.toolCostAtomic) : "Arc"}
+                  </strong>
                 </div>
                 <div className="submission__metric">
-                  <span>Delivered</span>
-                  <strong>{submission.deliveryMinutes}m</strong>
+                  <span>{submission.deliveryMinutes === null ? "Artifact" : "Delivered"}</span>
+                  <strong>
+                    {submission.deliveryMinutes === null
+                      ? "Hash bound"
+                      : `${submission.deliveryMinutes}m`}
+                  </strong>
                 </div>
               </div>
               <ul className="check-list">
@@ -153,13 +338,20 @@ export function SubmissionComparison() {
                 >
                   {selected === index ? "Selected" : "Choose"}
                 </button>
-                <Link
-                  className="button button--secondary"
-                  href={submission.previewPath}
-                  target="_blank"
-                >
-                  Preview <ExternalLink size={13} />
-                </Link>
+                {submission.previewPath ? (
+                  <Link
+                    className="button button--secondary"
+                    href={submission.previewPath}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Preview <ExternalLink size={13} />
+                  </Link>
+                ) : (
+                  <span className="button button--secondary" aria-disabled="true">
+                    No preview
+                  </span>
+                )}
               </div>
             </div>
           </article>

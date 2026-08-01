@@ -7,7 +7,7 @@ const requestSchema = z.object({
   address: z.string().regex(/^0x[\da-fA-F]{40}$/),
   contest: z.string().regex(/^0x[\da-fA-F]{40}$/),
   transactionHash: z.string().regex(/^0x[\da-fA-F]{64}$/),
-  slug: z.enum(["northstar", "mina", "kite"]),
+  submissionId: z.string().regex(/^[1-9]\d*$/),
 });
 
 export async function POST(request: Request) {

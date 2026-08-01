@@ -11,6 +11,14 @@ const safeHtml = `<!doctype html><html lang="en"><head>
   ${"content ".repeat(40)}
 </body></html>`;
 
+const browser = {
+  previewLoaded: true,
+  mobileNoOverflow: true,
+  ctaVisible: true,
+  formUsable: true,
+  detail: "Test browser verification",
+};
+
 describe("Verification Agent", () => {
   it("qualifies a safe complete artifact", () => {
     const result = verifyLandingPage({
@@ -18,7 +26,7 @@ describe("Verification Agent", () => {
       requiredHeadline: "Required line",
       contentHash: "0x01",
       knownContentHashes: [],
-      previewLoaded: true,
+      browser,
     });
     expect(result.qualified).toBe(true);
     expect(result.score).toBe(100);
@@ -30,7 +38,7 @@ describe("Verification Agent", () => {
       requiredHeadline: "Required line",
       contentHash: "0x01",
       knownContentHashes: [],
-      previewLoaded: true,
+      browser,
     });
     expect(result.qualified).toBe(false);
     expect(result.checks.find((check) => check.id === "scripts")?.passed).toBe(false);
@@ -42,7 +50,7 @@ describe("Verification Agent", () => {
       requiredHeadline: "Required line",
       contentHash: "0x01",
       knownContentHashes: ["0x01"],
-      previewLoaded: true,
+      browser,
     });
     expect(result.qualified).toBe(false);
   });
@@ -53,9 +61,21 @@ describe("Verification Agent", () => {
       requiredHeadline: "Required line",
       contentHash: "0x01",
       knownContentHashes: [],
-      previewLoaded: true,
+      browser,
     });
     expect(result.qualified).toBe(false);
     expect(result.checks.find((check) => check.id === "mobile")?.detail).toContain("900px");
+  });
+
+  it("rejects browser-rendered mobile overflow", () => {
+    const result = verifyLandingPage({
+      html: safeHtml,
+      requiredHeadline: "Required line",
+      contentHash: "0x02",
+      knownContentHashes: [],
+      browser: { ...browser, mobileNoOverflow: false },
+    });
+    expect(result.qualified).toBe(false);
+    expect(result.checks.find((check) => check.id === "runtime-mobile")?.passed).toBe(false);
   });
 });

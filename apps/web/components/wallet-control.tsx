@@ -1,26 +1,44 @@
 "use client";
 
 import { ARC_TESTNET_CHAIN_ID } from "@draftpay/chain";
+import { useEffect, useState } from "react";
 import { useAccount, useChainId, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 import { shortAddress } from "@/lib/format";
 
 export function WalletControl() {
   const account = useAccount();
   const chainId = useChainId();
-  const { connectors, connect, isPending: isConnecting } = useConnect();
+  const [injectedAvailable, setInjectedAvailable] = useState<boolean | null>(null);
+  const { connectors, connect, error: connectError, isPending: isConnecting, reset } = useConnect();
   const { disconnect } = useDisconnect();
   const { switchChain, isPending: isSwitching } = useSwitchChain();
 
+  useEffect(() => setInjectedAvailable("ethereum" in window), []);
+
   if (!account.isConnected) {
     return (
-      <button
-        className="button button--secondary"
-        type="button"
-        disabled={isConnecting || connectors.length === 0}
-        onClick={() => connectors[0] && connect({ connector: connectors[0] })}
-      >
-        {isConnecting ? "Connecting…" : "Connect wallet"}
-      </button>
+      <div className="wallet-connect-state">
+        <button
+          className="button button--secondary"
+          type="button"
+          disabled={isConnecting || connectors.length === 0 || injectedAvailable !== true}
+          onClick={() => {
+            reset();
+            if (connectors[0]) connect({ connector: connectors[0] });
+          }}
+        >
+          {isConnecting
+            ? "Connecting…"
+            : injectedAvailable === false
+              ? "Wallet extension required"
+              : "Connect wallet"}
+        </button>
+        {connectError && (
+          <span className="wallet-connect-error" role="alert">
+            {connectError.message}
+          </span>
+        )}
+      </div>
     );
   }
 

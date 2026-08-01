@@ -7,10 +7,10 @@ describe("winner source access challenge", () => {
       address: "0x1111111111111111111111111111111111111111",
       contest: "0x2222222222222222222222222222222222222222",
       transactionHash: "0x3333333333333333333333333333333333333333333333333333333333333333",
-      slug: "northstar",
+      submissionId: "17",
     });
     expect(issued.message).toContain("DraftPay source access");
-    expect(issued.message).toContain("Artifact: northstar");
+    expect(issued.message).toContain("Winner submission: 17");
 
     const consumed = consumeSourceChallenge(issued.nonce);
     expect(consumed?.transactionHash).toBe(

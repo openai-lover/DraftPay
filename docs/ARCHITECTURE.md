@@ -76,4 +76,4 @@ Public, non-secret decisions, payment facts, and confirmed proof receipts append
 
 The UI labels evidence real only after a successful Arc receipt or settled Circle payment is verified. Explorer URLs are derived from validated hashes and addresses, never fixtures. Winner source release uses a one-time wallet signature bound to the client, contest, receipt, and selected artifact, followed by direct receipt/client checks.
 
-Real deployment still requires funded Testnet wallets, Circle configuration, and a hosting login. No address, payment ID, receipt, or public URL is recorded before success.
+The dedicated Testnet wallets, factory, two funded contests, Circle Gateway buyer deposit, and a settled x402 payment are complete. A unique real-model artifact, onchain submission, evaluator/settlement receipts, and public hosting still require external writes; none is recorded before success.

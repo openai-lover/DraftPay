@@ -5,6 +5,7 @@ import {
   createModelAdapter,
   appendEvidence,
   artifactPublicUri,
+  listStoredArtifactHashes,
   runBuilderAgent,
   readContestOnArc,
   storeArtifact,
@@ -121,7 +122,7 @@ export async function POST(request: Request) {
       },
       model,
       x402,
-      knownContentHashes: [],
+      knownContentHashes: targetContest ? await listStoredArtifactHashes() : [],
     });
 
     let artifactStorage = null;
