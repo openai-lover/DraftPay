@@ -20,12 +20,17 @@ const deploymentPath = resolve(root, ".demo", "arc-deployment.json");
 const deployment = JSON.parse(readFileSync(deploymentPath, "utf8")) as {
   contests?: Array<{ slug: string; address: Address }>;
 };
-const contest = deployment.contests?.find((candidate) => candidate.slug === "no-winner");
+const overrideAddress = process.env.DRAFTPAY_CONTEST_ADDRESS;
+const contest = overrideAddress
+  ? { slug: process.env.DRAFTPAY_CONTEST_SLUG ?? "no-winner", address: overrideAddress as Address }
+  : deployment.contests?.find((candidate) => candidate.slug === "no-winner");
 if (!contest) throw new Error("No no-winner contest was found in Arc deployment evidence");
 
 const account = privateKeyToAccount(privateKey as `0x${string}`);
 const rpcUrl = process.env.ARC_TESTNET_RPC_URL ?? ARC_TESTNET_RPC_URL;
-const publicClient = createPublicClient({ chain: ARC_TESTNET, transport: http(rpcUrl) });
+const readRpcUrl =
+  process.env.ARC_TESTNET_READ_RPC_URL ?? "https://draft-pay-web.vercel.app/api/rpc";
+const publicClient = createPublicClient({ chain: ARC_TESTNET, transport: http(readRpcUrl) });
 const walletClient = createWalletClient({ account, chain: ARC_TESTNET, transport: http(rpcUrl) });
 const selectionDeadline = await publicClient.readContract({
   address: contest.address,
@@ -82,6 +87,6 @@ const evidence = {
 };
 const evidenceDirectory = resolve(root, ".demo", "settlements");
 await mkdir(evidenceDirectory, { recursive: true });
-const evidencePath = resolve(evidenceDirectory, "no-winner.json");
+const evidencePath = resolve(evidenceDirectory, `${contest.slug}.json`);
 await writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
 console.log(JSON.stringify({ ...evidence, evidencePath }, null, 2));

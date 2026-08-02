@@ -46,6 +46,7 @@ export interface EvaluateContestInput {
   privateKey: Hex;
   assessments: EvaluationAssessment[];
   rpcUrl?: string;
+  readRpcUrl?: string;
 }
 
 /** Executes the evaluator-only qualification and bounded ranking transactions on a fresh contest. */
@@ -71,11 +72,18 @@ export async function evaluateContestOnArc(
     throw new Error("Verification scores must be integers from 0 to 100");
   }
 
-  const transport = http(input.rpcUrl ?? ARC_TESTNET_RPC_URL);
-  const publicClient = createPublicClient({ chain: ARC_TESTNET, transport });
+  const writeTransport = http(input.rpcUrl ?? ARC_TESTNET_RPC_URL);
+  const publicClient = createPublicClient({
+    chain: ARC_TESTNET,
+    transport: http(input.readRpcUrl ?? input.rpcUrl ?? ARC_TESTNET_RPC_URL),
+  });
   assertArcTestnet(await publicClient.getChainId());
   const account = privateKeyToAccount(input.privateKey);
-  const walletClient = createWalletClient({ account, chain: ARC_TESTNET, transport });
+  const walletClient = createWalletClient({
+    account,
+    chain: ARC_TESTNET,
+    transport: writeTransport,
+  });
   const address = input.contestAddress as Address;
   const evaluator = await publicClient.readContract({
     address,

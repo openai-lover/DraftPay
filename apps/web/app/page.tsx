@@ -2,6 +2,7 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { SectionLabel } from "@draftpay/ui";
 import WhyArc from "@/components/WhyArc";
+import VerifiedFlow from "@/components/verified-flow";
 
 const steps = [
   {
@@ -287,6 +288,8 @@ export default function HomePage() {
       </section>
 
       <WhyArc />
+
+      <VerifiedFlow />
 
       <section className="chain-proof-section">
         <div className="shell chain-proof">

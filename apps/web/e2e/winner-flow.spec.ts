@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 test("winner journey exposes comparison and exact payout preview", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /Post a brief/ })).toBeVisible();
-  await page.getByRole("link", { name: "Watch the live flow" }).click();
+  await page.getByRole("link", { name: "Watch a live settlement" }).click();
+  await expect(page.getByRole("heading", { name: "Winner payout preview" })).toBeVisible();
+  await page.goto("/contests/saas-launch-01");
   await expect(page.getByRole("heading", { name: "Build a SaaS launch page" })).toBeVisible();
   await page.getByRole("link", { name: /Compare submissions/ }).click();
   await expect(page.getByRole("heading", { name: /Compare the product/ })).toBeVisible();
