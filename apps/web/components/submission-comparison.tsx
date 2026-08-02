@@ -35,6 +35,9 @@ interface ComparedSubmission {
 function safePreviewUrl(metadataUri: string): string | null {
   try {
     const url = new URL(metadataUri, window.location.origin);
+    if (url.hostname === "draft-pay-web.vercel.app") {
+      return `${window.location.origin}${url.pathname}${url.search}${url.hash}`;
+    }
     if (url.protocol === "https:" || (url.protocol === "http:" && url.hostname === "localhost")) {
       return url.toString();
     }
@@ -79,7 +82,7 @@ const recordedFinalists: ComparedSubmission[] = evidence.submissions.winner.map(
       title: `Submission #${rank}`,
       rationale:
         "The submission, qualification, rank, content hash, and public artifact are indexed from the completed Arc run.",
-      previewPath: artifact?.publicUrl ?? null,
+      previewPath: artifact ? new URL(artifact.publicUrl).pathname : null,
       screenshotPath: null,
       contentHash: submission.contentHash,
       rank,
