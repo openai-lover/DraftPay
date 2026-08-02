@@ -1,6 +1,6 @@
 import { mkdir, readFile, rename } from "node:fs/promises";
 import { resolve } from "node:path";
-import { chromium, type Page } from "@playwright/test";
+import { chromium, type Page } from "../apps/web/node_modules/@playwright/test/index.mjs";
 
 interface Evidence {
   artifacts: Array<{ publicUrl: string }>;

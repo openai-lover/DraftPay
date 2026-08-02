@@ -1,5 +1,6 @@
 import { SectionLabel } from "@draftpay/ui";
 import { SubmissionComparison } from "@/components/submission-comparison";
+import evidence from "@/data/final-run.json";
 
 export const metadata = { title: "Compare submissions" };
 
@@ -16,7 +17,7 @@ export default function ComparePage() {
           </span>
         </div>
       </header>
-      <SubmissionComparison />
+      <SubmissionComparison contestAddress={evidence.contests.winner.address} />
     </div>
   );
 }

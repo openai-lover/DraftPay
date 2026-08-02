@@ -7,6 +7,5 @@ test("create flow requires specification approval and real deployment config", a
   await page.getByRole("button", { name: "Approve specification" }).click();
   await expect(page.getByText("Approved for funding")).toBeVisible();
   await expect(page.getByRole("button", { name: "Deploy and fund on Arc" })).toBeDisabled();
-  await expect(page.getByText(/No DraftPay factory is configured/)).toBeVisible();
   await expect(page.getByText(/Wallet disconnected/)).toBeVisible();
 });

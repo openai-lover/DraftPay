@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { isAddress, type Address, type Hex } from "viem";
 import { useAccount, useChainId, usePublicClient, useWriteContract } from "wagmi";
+import evidence from "@/data/final-run.json";
 import { shortAddress, usdc } from "@/lib/format";
 
 interface ComparedSubmission {
@@ -62,18 +63,73 @@ const fixtureSubmissions: ComparedSubmission[] = demoSubmissions.map((submission
   deliveryMinutes: submission.deliveryMinutes,
 }));
 
-export function SubmissionComparison() {
+const recordedFinalists: ComparedSubmission[] = evidence.submissions.winner.map(
+  (submission, index) => {
+    const artifact = evidence.artifacts.find(
+      (candidate) => candidate.contentHash.toLowerCase() === submission.contentHash.toLowerCase(),
+    );
+    const rank = index + 1;
+    return {
+      key: `recorded-${submission.hash}`,
+      onchainId: BigInt(rank),
+      mode: "real",
+      builderName: rank === 1 ? "DraftPay Agent" : `Finalist 0${rank}`,
+      builderKind: "onchain wallet",
+      builderAddress: submission.builder,
+      title: `Submission #${rank}`,
+      rationale:
+        "The submission, qualification, rank, content hash, and public artifact are indexed from the completed Arc run.",
+      previewPath: artifact?.publicUrl ?? null,
+      screenshotPath: null,
+      contentHash: submission.contentHash,
+      rank,
+      verificationScore: null,
+      verificationChecks: [
+        {
+          id: `recorded-qualified-${rank}`,
+          label: "Qualified by the Arc evaluator",
+          passed: true,
+          detail: "Qualification transaction is linked in the public evidence packet",
+          hardFailure: false,
+        },
+        {
+          id: `recorded-finalist-${rank}`,
+          label: `Ranked finalist #${rank}`,
+          passed: true,
+          detail: "Finalist ranking is recorded on Arc Testnet",
+          hardFailure: false,
+        },
+        {
+          id: `recorded-hash-${rank}`,
+          label: "Artifact hash bound onchain",
+          passed: true,
+          detail: submission.contentHash,
+          hardFailure: false,
+        },
+      ],
+      toolCostAtomic: rank === 1 ? evidence.agent.x402Payment.amountAtomic : null,
+      deliveryMinutes: null,
+    };
+  },
+);
+
+export function SubmissionComparison({
+  contestAddress: evidenceAddress,
+}: {
+  contestAddress?: string;
+}) {
   const [selected, setSelected] = useState(0);
   const [status, setStatus] = useState<"idle" | "pending" | "error">("idle");
-  const [loadStatus, setLoadStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [loadStatus, setLoadStatus] = useState<"idle" | "loading" | "degraded">("idle");
   const [error, setError] = useState<string | null>(null);
-  const [onchainSubmissions, setOnchainSubmissions] = useState<ComparedSubmission[]>([]);
+  const [onchainSubmissions, setOnchainSubmissions] =
+    useState<ComparedSubmission[]>(recordedFinalists);
   const router = useRouter();
   const account = useAccount();
   const chainId = useChainId();
   const publicClient = usePublicClient();
   const { writeContractAsync } = useWriteContract();
-  const configured = process.env.NEXT_PUBLIC_DEMO_CONTEST_ADDRESS;
+  const configured = evidenceAddress ?? process.env.NEXT_PUBLIC_DEMO_CONTEST_ADDRESS;
   const contestAddress: Address | null = configured && isAddress(configured) ? configured : null;
 
   useEffect(() => {
@@ -147,11 +203,13 @@ export function SubmissionComparison() {
           setSelected(0);
           setLoadStatus("idle");
         }
-      } catch (cause) {
+      } catch {
         if (active) {
-          setOnchainSubmissions([]);
-          setError(cause instanceof Error ? cause.message : "Could not load Arc finalists");
-          setLoadStatus("error");
+          setOnchainSubmissions(recordedFinalists);
+          setError(
+            "Live Arc refresh is temporarily unavailable. Showing the recorded finalist receipts from the completed run.",
+          );
+          setLoadStatus("degraded");
         }
       }
     }
