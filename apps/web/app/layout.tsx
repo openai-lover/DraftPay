@@ -12,11 +12,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <Providers>
-          <div className="testnet-banner">
-            Experimental hackathon MVP running on Arc Testnet. Do not use real funds.
-          </div>
           <header className="site-header">
             <div className="shell site-header__inner">
               <Link href="/" className="brand" aria-label="DraftPay home">
@@ -35,7 +38,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <footer className="site-footer">
             <div className="shell site-footer__inner">
               <span>DraftPay · Programmable Money Hackathon</span>
-              <span>Arc Testnet · USDC · Unaudited demo</span>
+              <span>Arc Testnet · USDC · Unaudited</span>
             </div>
           </footer>
         </Providers>
