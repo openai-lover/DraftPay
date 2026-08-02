@@ -103,23 +103,43 @@ export async function readContestOnArc(input: ReadContestInput): Promise<Contest
   });
   assertArcTestnet(await client.getChainId());
 
-  const [
-    token,
-    prize,
-    submissionDeadline,
-    selectionDeadline,
-    specificationHash,
-    state,
-    qualifiedCount,
-  ] = await Promise.all([
-    client.readContract({ address, abi: draftPayContestAbi, functionName: "usdc" }),
-    client.readContract({ address, abi: draftPayContestAbi, functionName: "prizeAmount" }),
-    client.readContract({ address, abi: draftPayContestAbi, functionName: "submissionDeadline" }),
-    client.readContract({ address, abi: draftPayContestAbi, functionName: "selectionDeadline" }),
-    client.readContract({ address, abi: draftPayContestAbi, functionName: "specificationHash" }),
-    client.readContract({ address, abi: draftPayContestAbi, functionName: "state" }),
-    client.readContract({ address, abi: draftPayContestAbi, functionName: "qualifiedCount" }),
-  ]);
+  // Arc's public RPC applies a low burst limit. Sequential reads keep the agent reliable without
+  // weakening any of the onchain cross-checks.
+  const token = await client.readContract({
+    address,
+    abi: draftPayContestAbi,
+    functionName: "usdc",
+  });
+  const prize = await client.readContract({
+    address,
+    abi: draftPayContestAbi,
+    functionName: "prizeAmount",
+  });
+  const submissionDeadline = await client.readContract({
+    address,
+    abi: draftPayContestAbi,
+    functionName: "submissionDeadline",
+  });
+  const selectionDeadline = await client.readContract({
+    address,
+    abi: draftPayContestAbi,
+    functionName: "selectionDeadline",
+  });
+  const specificationHash = await client.readContract({
+    address,
+    abi: draftPayContestAbi,
+    functionName: "specificationHash",
+  });
+  const state = await client.readContract({
+    address,
+    abi: draftPayContestAbi,
+    functionName: "state",
+  });
+  const qualifiedCount = await client.readContract({
+    address,
+    abi: draftPayContestAbi,
+    functionName: "qualifiedCount",
+  });
 
   return contestSummaryFromSnapshot(address as Address, metadata, {
     token,

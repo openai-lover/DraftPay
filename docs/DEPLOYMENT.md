@@ -1,6 +1,16 @@
 # Arc Testnet and Web Deployment
 
-Dedicated Testnet-only EOAs are funded. The factory and two 5-USDC contests are deployed on Arc Testnet. The builder deposited 1 USDC into Circle Gateway and completed a settled 0.01-USDC x402 request. The first no-winner contest completed the zero-submission 5-USDC refund path. Onchain artifact submission, evaluator writes, winner/finalist settlement, and public hosting remain pending. Record evidence only after each receipt or deployment succeeds.
+Final public deployment and live-run evidence (2026-08-02):
+
+- Web: <https://draft-pay-web.vercel.app>
+- x402 seller: <https://draft-pay-x402-service.vercel.app/health>
+- Canonical evidence index: <https://draft-pay-web.vercel.app/evidence/final-run.json>
+- Winner contest: `0xA5aD6018afd517429C64469cC2dFFE09c5f1853a`
+- Finalist no-winner contest: `0xeF753F526B4fbB39b4913eAfc7dE5C85471F7e49`
+
+The canonical evidence index contains the exact funding, submission, evaluator, winner, and no-winner ArcScan links. The sequence below remains the reproducible operator procedure.
+
+Dedicated Testnet-only EOAs are funded. The factory and multiple isolated 5-USDC contests are deployed on Arc Testnet. The builder deposited one USDC into Circle Gateway and completed settled 0.01-USDC x402 requests. The final run includes a generated artifact, real Chromium verification, six proof submissions, evaluator qualification/ranking, winner settlement, and finalist-bearing no-winner settlement. An earlier contest separately proves the zero-submission full-refund path.
 
 Current checked evidence:
 

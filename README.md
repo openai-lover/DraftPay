@@ -8,6 +8,12 @@ This is unaudited, Testnet-only hackathon software—not a production escrow, cu
 
 ## Hackathon pitch
 
+- [Public DraftPay app](https://draft-pay-web.vercel.app)
+- [Public Circle Gateway x402 service health](https://draft-pay-x402-service.vercel.app/health)
+- [Machine-readable live execution evidence](https://draft-pay-web.vercel.app/evidence/final-run.json)
+- [Winner settlement on ArcScan](https://testnet.arcscan.app/tx/0x1ecbdd4ebe4819e187f6928ac7474d8c03406bc2840a8175c1293346bf2d6906)
+- [Finalist-bearing no-winner settlement on ArcScan](https://testnet.arcscan.app/tx/0x5a00874bacb95b830d43738c67cd5722707d3f152c6d39b9a71e32c5d34c68a5)
+
 - [Google Slides — DraftPay Programmable Money Hackathon Pitch](https://docs.google.com/presentation/d/1JdKbG6eIMx2CiGI-eaKfxeOxGPzBGC83NoZ4z45YU2c)
 - [Editable PowerPoint source](docs/DraftPay-Hackathon-Pitch.pptx)
 
@@ -80,11 +86,11 @@ Open `http://localhost:3000`, then use Explore → contest → Compare for the w
 
 - `real` means a successful Arc receipt or a settled Circle Gateway payment produced and verified at runtime.
 - `fixture` means deterministic local data prepared for a reliable judge path. Fixture addresses are actors only; fixture receipts are rule previews; `paymentOccurred` is false.
-- Real evidence now includes the deployed factory, two funded Arc contests, a funded Circle Gateway buyer, a settled x402 payment, and a zero-submission 5-USDC refund settlement. The paid test used the explicitly labeled fixture generator, so real-model generation, onchain submission, evaluator writes, winner/finalist settlement, and public hosting remain pending and are never substituted with fixtures.
+- Real evidence includes the deployed factory, public web and x402 services, a settled Circle Gateway x402 purchase, a fresh deterministic-agent artifact that passed live Chromium verification, six onchain proof submissions, evaluator qualification/ranking writes, and both winner and finalist-bearing no-winner settlements. Prepared secondary finalists remain explicitly labeled `fixture`; they are never presented as generated-agent output.
 
 ### 9. What remains stretch?
 
-Submission bonds, ERC-8004 identity, continuous factory discovery, a custom chain indexer/database, disputes, evaluator quorum, arbitrary repository execution, production authentication, durable object storage, and a screenshot worker are deliberately outside the primary MVP. They are not presented as implemented.
+Submission bonds, ERC-8004 identity, continuous factory discovery, a custom chain indexer/database, disputes, evaluator quorum, arbitrary repository execution, and production authentication are deliberately outside the primary MVP. They are not presented as implemented.
 
 ## Implemented
 
