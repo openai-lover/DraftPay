@@ -33,20 +33,17 @@ export default function ActivityPage() {
         </div>
         <MarketplaceActivity items={marketplaceActivity} />
         <p className="market-pulse__disclosure">
-          Seeded demo data · events are fictional and create no payment or onchain evidence.
+          Fixture events are illustrative and create no payment or onchain evidence.
         </p>
       </section>
       <div className="activity-run-heading">
         <div>
-          <SectionLabel>Inspect one agent run</SectionLabel>
+          <SectionLabel>Inspect one fixture agent run</SectionLabel>
           <h2>Northstar Agent evaluates the Ledgerly brief.</h2>
         </div>
       </div>
       <div className="activity-layout">
         <section className="timeline" aria-label="Builder Agent activity">
-          <div style={{ marginBottom: 20 }}>
-            <EvidenceBadge mode="fixture" />
-          </div>
           {demoActivity.map((item) => (
             <div className={`timeline-item timeline-item--${item.status}`} key={item.id}>
               <div>

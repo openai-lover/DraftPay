@@ -54,7 +54,7 @@ export default async function ContestDetailPage({ params }: ContestDetailPagePro
   const primaryLabel = isFlagship
     ? "Compare submissions"
     : isSettled
-      ? "View demo settlement"
+      ? "View settlement preview"
       : "Inspect marketplace activity";
 
   return (
@@ -131,7 +131,7 @@ export default async function ContestDetailPage({ params }: ContestDetailPagePro
             </>
           ) : (
             <div className="notice notice--amber" style={{ marginTop: 18 }}>
-              Demo-only scenario. No wallet payment, deployed contract, or onchain receipt exists
+              Fixture scenario. No wallet payment, deployed contract, or onchain receipt exists
               for this seeded contest.
             </div>
           )}
