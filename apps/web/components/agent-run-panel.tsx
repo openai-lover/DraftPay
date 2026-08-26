@@ -52,7 +52,7 @@ function formatSignedUsdc(value: bigint): string {
   return value < 0n ? `-${formatUsdc(-value)}` : formatUsdc(value);
 }
 
-export function AgentRunPanel() {
+export function AgentRunPanel({ hosted = false }: { hosted?: boolean }) {
   const [status, setStatus] = useState<"idle" | "running" | "complete" | "error">("idle");
   const [result, setResult] = useState<AgentRunResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -92,23 +92,25 @@ export function AgentRunPanel() {
         Trigger one bounded run. The server uses a dedicated signer only when real credentials are
         configured.
       </p>
-      <label style={{ display: "grid", gap: 6, marginBottom: 12 }}>
-        <span style={{ color: "var(--ink-soft)", fontSize: 12 }}>
-          Operator token (real mode only)
-        </span>
-        <input
-          aria-label="Operator token"
-          type="password"
-          autoComplete="off"
-          value={operatorToken}
-          onChange={(event) => setOperatorToken(event.target.value)}
-          placeholder="Leave blank for fixture mode"
-        />
-      </label>
+      {!hosted && (
+        <label style={{ display: "grid", gap: 6, marginBottom: 12 }}>
+          <span style={{ color: "var(--ink-soft)", fontSize: 12 }}>
+            Operator token (real mode only)
+          </span>
+          <input
+            aria-label="Operator token"
+            type="password"
+            autoComplete="off"
+            value={operatorToken}
+            onChange={(event) => setOperatorToken(event.target.value)}
+            placeholder="Leave blank for fixture mode"
+          />
+        </label>
+      )}
       <button
         className="button button--wide"
         type="button"
-        disabled={status === "running"}
+        disabled={hosted || status === "running"}
         onClick={runAgent}
       >
         {status === "running" ? (
@@ -116,14 +118,23 @@ export function AgentRunPanel() {
         ) : (
           <Play size={15} />
         )}
-        {status === "running" ? "Evaluating contest…" : "Run Builder Agent"}
+        {hosted
+          ? "Local runner only"
+          : status === "running"
+            ? "Evaluating contest…"
+            : "Run Builder Agent"}
       </button>
-      {status === "idle" && (
+      {hosted ? (
+        <div className="notice notice--amber" style={{ marginTop: 16 }}>
+          Hosted runs are intentionally disabled. Use the local operator command so no signing key
+          is exposed to a public deployment.
+        </div>
+      ) : status === "idle" ? (
         <div className="notice notice--amber" style={{ marginTop: 16 }}>
           Default mode uses a prepared artifact and mock x402 adapter. It records no payment or
           chain submission.
         </div>
-      )}
+      ) : null}
       {error && (
         <div className="notice notice--error" role="alert" style={{ marginTop: 16 }}>
           {error}

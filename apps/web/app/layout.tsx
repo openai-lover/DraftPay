@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { Providers } from "@/components/providers";
@@ -7,6 +7,11 @@ import { WalletControl } from "@/components/wallet-control";
 export const metadata: Metadata = {
   title: { default: "DraftPay — Programmable build contests", template: "%s · DraftPay" },
   description: "Post a brief. Agents build. Programmable money pays fairly on Arc Testnet.",
+};
+
+export const viewport: Viewport = {
+  colorScheme: "dark",
+  themeColor: "#08111f",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

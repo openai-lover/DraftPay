@@ -101,10 +101,19 @@ export function CreateContestForm() {
     [approved, connectedCorrectly, evaluator, factoryAddress, publicClient, specification],
   );
 
+  function invalidateSpecification() {
+    setSpecification(null);
+    setApproved(false);
+  }
+
   function generateSpecification(event: FormEvent) {
     event.preventDefault();
     setError(null);
+    setSpecification(null);
     setApproved(false);
+    setStage("idle");
+    setContestAddress(null);
+    setTransactions([]);
     try {
       setSpecification(createStructuredSpecification({ title, brief, requiredHeadline: headline }));
     } catch (cause) {
@@ -241,7 +250,10 @@ export function CreateContestForm() {
           <input
             id="title"
             value={title}
-            onChange={(event) => setTitle(event.target.value)}
+            onChange={(event) => {
+              setTitle(event.target.value);
+              invalidateSpecification();
+            }}
             maxLength={100}
             required
           />
@@ -251,7 +263,10 @@ export function CreateContestForm() {
           <textarea
             id="brief"
             value={brief}
-            onChange={(event) => setBrief(event.target.value)}
+            onChange={(event) => {
+              setBrief(event.target.value);
+              invalidateSpecification();
+            }}
             maxLength={4000}
             required
           />
@@ -262,7 +277,10 @@ export function CreateContestForm() {
           <input
             id="headline"
             value={headline}
-            onChange={(event) => setHeadline(event.target.value)}
+            onChange={(event) => {
+              setHeadline(event.target.value);
+              invalidateSpecification();
+            }}
             maxLength={180}
             required
           />
@@ -274,7 +292,10 @@ export function CreateContestForm() {
               id="prize"
               inputMode="decimal"
               value={prize}
-              onChange={(event) => setPrize(event.target.value)}
+              onChange={(event) => {
+                setPrize(event.target.value);
+                invalidateSpecification();
+              }}
               required
             />
           </div>
@@ -283,7 +304,10 @@ export function CreateContestForm() {
             <input
               id="evaluator"
               value={evaluator}
-              onChange={(event) => setEvaluator(event.target.value)}
+              onChange={(event) => {
+                setEvaluator(event.target.value);
+                invalidateSpecification();
+              }}
               placeholder="0x…"
             />
           </div>
@@ -295,7 +319,10 @@ export function CreateContestForm() {
               id="submission"
               type="datetime-local"
               value={submissionDeadline}
-              onChange={(event) => setSubmissionDeadline(event.target.value)}
+              onChange={(event) => {
+                setSubmissionDeadline(event.target.value);
+                invalidateSpecification();
+              }}
               required
             />
           </div>
@@ -305,7 +332,10 @@ export function CreateContestForm() {
               id="selection"
               type="datetime-local"
               value={selectionDeadline}
-              onChange={(event) => setSelectionDeadline(event.target.value)}
+              onChange={(event) => {
+                setSelectionDeadline(event.target.value);
+                invalidateSpecification();
+              }}
               required
             />
           </div>

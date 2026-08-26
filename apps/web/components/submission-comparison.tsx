@@ -9,9 +9,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { isAddress, type Address, type Hex } from "viem";
-import { useAccount, useChainId, usePublicClient, useWriteContract } from "wagmi";
+import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteContract } from "wagmi";
 import evidence from "@/data/final-run.json";
 import { shortAddress, usdc } from "@/lib/format";
+import {
+  winnerSelectionDisabledReason,
+  type WinnerSelectionAvailability,
+} from "@/lib/winner-selection";
 
 interface ComparedSubmission {
   key: string;
@@ -121,19 +125,88 @@ export function SubmissionComparison({
 }: {
   contestAddress?: string;
 }) {
+  const configured = evidenceAddress ?? process.env.NEXT_PUBLIC_DEMO_CONTEST_ADDRESS;
+  const contestAddress: Address | null = configured && isAddress(configured) ? configured : null;
   const [selected, setSelected] = useState(0);
   const [status, setStatus] = useState<"idle" | "pending" | "error">("idle");
-  const [loadStatus, setLoadStatus] = useState<"idle" | "loading" | "degraded">("idle");
+  const [loadStatus, setLoadStatus] = useState<"idle" | "loading" | "degraded">(
+    contestAddress ? "loading" : "idle",
+  );
+  const [nowSeconds, setNowSeconds] = useState(0n);
   const [error, setError] = useState<string | null>(null);
   const [onchainSubmissions, setOnchainSubmissions] =
     useState<ComparedSubmission[]>(recordedFinalists);
   const router = useRouter();
   const account = useAccount();
   const chainId = useChainId();
-  const publicClient = usePublicClient();
+  const publicClient = usePublicClient({ chainId: ARC_TESTNET_CHAIN_ID });
   const { writeContractAsync } = useWriteContract();
-  const configured = evidenceAddress ?? process.env.NEXT_PUBLIC_DEMO_CONTEST_ADDRESS;
-  const contestAddress: Address | null = configured && isAddress(configured) ? configured : null;
+
+  const contractReads = useReadContracts({
+    contracts: contestAddress
+      ? [
+          {
+            address: contestAddress,
+            abi: draftPayContestAbi,
+            functionName: "state",
+            chainId: ARC_TESTNET_CHAIN_ID,
+          },
+          {
+            address: contestAddress,
+            abi: draftPayContestAbi,
+            functionName: "client",
+            chainId: ARC_TESTNET_CHAIN_ID,
+          },
+          {
+            address: contestAddress,
+            abi: draftPayContestAbi,
+            functionName: "selectionDeadline",
+            chainId: ARC_TESTNET_CHAIN_ID,
+          },
+        ]
+      : [],
+    query: {
+      enabled: Boolean(contestAddress),
+      refetchInterval: 10_000,
+    },
+  });
+
+  const stateRead = contractReads.data?.[0];
+  const clientRead = contractReads.data?.[1];
+  const deadlineRead = contractReads.data?.[2];
+  const contractState = stateRead?.status === "success" ? Number(stateRead.result) : null;
+  const contractClient =
+    clientRead?.status === "success" &&
+    typeof clientRead.result === "string" &&
+    isAddress(clientRead.result)
+      ? clientRead.result
+      : null;
+  const selectionDeadline =
+    deadlineRead?.status === "success" && typeof deadlineRead.result === "bigint"
+      ? deadlineRead.result
+      : null;
+  const contractReadStatus: WinnerSelectionAvailability["contractReadStatus"] = !contestAddress
+    ? "idle"
+    : contractReads.isPending
+      ? "pending"
+      : contractReads.isError ||
+          stateRead?.status === "failure" ||
+          clientRead?.status === "failure" ||
+          deadlineRead?.status === "failure"
+        ? "error"
+        : stateRead?.status === "success" &&
+            clientRead?.status === "success" &&
+            deadlineRead?.status === "success"
+          ? "ready"
+          : "pending";
+
+  useEffect(() => {
+    if (!contestAddress) return;
+    const updateClock = () => setNowSeconds(BigInt(Math.floor(Date.now() / 1_000)));
+    updateClock();
+    const timer = window.setInterval(updateClock, 1_000);
+    return () => window.clearInterval(timer);
+  }, [contestAddress]);
 
   useEffect(() => {
     let active = true;
@@ -228,9 +301,34 @@ export function SubmissionComparison({
   );
   const selectedSubmission = submissions[selected] ?? null;
 
+  const selectionDisabledReason = winnerSelectionDisabledReason({
+    hasContestAddress: Boolean(contestAddress),
+    contractReadStatus,
+    contractState,
+    contractClient,
+    selectionDeadline,
+    nowSeconds,
+    accountAddress: account.address,
+    isConnected: account.isConnected,
+    chainId,
+    finalistsStatus:
+      loadStatus === "loading" ? "loading" : loadStatus === "degraded" ? "error" : "ready",
+    hasSelectedFinalist: Boolean(selectedSubmission?.onchainId),
+    hasPublicClient: Boolean(publicClient),
+    transactionPending: status === "pending",
+  });
+
   async function selectWinner() {
-    if (!contestAddress || !account.address || !publicClient || !selectedSubmission?.onchainId)
+    if (
+      selectionDisabledReason ||
+      !contestAddress ||
+      !account.address ||
+      !publicClient ||
+      !selectedSubmission?.onchainId
+    ) {
+      if (selectionDisabledReason) setError(selectionDisabledReason);
       return;
+    }
     setStatus("pending");
     setError(null);
     try {
@@ -256,12 +354,7 @@ export function SubmissionComparison({
     }
   }
 
-  const writeEnabled = Boolean(
-    contestAddress &&
-    selectedSubmission?.onchainId &&
-    account.isConnected &&
-    chainId === ARC_TESTNET_CHAIN_ID,
-  );
+  const writeEnabled = selectionDisabledReason === null;
 
   return (
     <>
@@ -311,8 +404,10 @@ export function SubmissionComparison({
           This contest has no ranked finalists yet. Winner selection remains disabled.
         </p>
       )}
-      {contestAddress && !account.isConnected && (
-        <p className="notice">Connect the contest client wallet to select a winner.</p>
+      {contestAddress && selectionDisabledReason && (
+        <p className="notice notice--amber" aria-live="polite">
+          {selectionDisabledReason}
+        </p>
       )}
       {error && (
         <p className="notice notice--error" role="alert">

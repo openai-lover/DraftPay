@@ -57,11 +57,15 @@ export function WalletControl() {
 
   return (
     <div className="wallet-control">
-      <span className="network-dot" aria-label="Connected to Arc Testnet" />
+      <span className="network-dot" aria-hidden="true" />
+      <span className="sr-only" role="status">
+        Connected to Arc Testnet
+      </span>
       <button
         className="wallet-address"
         type="button"
         onClick={() => disconnect()}
+        aria-label={`Disconnect wallet ${shortAddress(account.address)}`}
         title="Disconnect wallet"
       >
         {shortAddress(account.address)}

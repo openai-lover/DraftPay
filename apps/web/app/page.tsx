@@ -234,7 +234,12 @@ export default function HomePage() {
             <SectionLabel>Two endings, one contract</SectionLabel>
             <h2>Every contest closes. The only question is how.</h2>
           </div>
-          <div className="endings-table-wrap">
+          <div
+            className="endings-table-wrap"
+            role="region"
+            aria-label="Payout outcomes comparison"
+            tabIndex={0}
+          >
             <table className="endings-table">
               <thead>
                 <tr>
