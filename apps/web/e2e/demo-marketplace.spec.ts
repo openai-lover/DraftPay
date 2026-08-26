@@ -20,6 +20,6 @@ test("live proof and seeded marketplace are clearly separated", async ({ page })
 
   await page.getByRole("link", { name: "Open Ship the OrbitPay developer launch" }).click();
   await expect(page.getByText("Winner preview", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Not deployed in fixture mode")).toBeVisible();
+  await expect(page.getByText("Fixture only · no deployed contract")).toBeVisible();
   await expect(page.getByText("No wallet payment", { exact: false })).toBeVisible();
 });

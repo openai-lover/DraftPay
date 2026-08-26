@@ -117,7 +117,7 @@ export function RealSettlementReceipt({
         <div className="receipt__mark">
           <Check size={22} />
         </div>
-        <h1>Settlement confirmed</h1>
+        <h2>Settlement confirmed</h2>
         <p>
           Receipt status, target contract, event logs, payouts, and final contract state were read
           directly from Arc Testnet.

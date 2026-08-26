@@ -34,7 +34,7 @@ export default async function PreviewPage({ params }: { params: Promise<{ slug: 
         <strong>{preview.brand}</strong>
         <span>{preview.label}</span>
       </nav>
-      <main className="preview-main">
+      <div className="preview-main">
         <section className="preview-hero" data-section="hero">
           <h1>{preview.headline}</h1>
           <p>{preview.copy}</p>
@@ -66,7 +66,7 @@ export default async function PreviewPage({ params }: { params: Promise<{ slug: 
             <button type="submit">Request access</button>
           </form>
         </section>
-      </main>
+      </div>
       <footer className="preview-footer">Prepared seeded submission · no external scripts</footer>
     </article>
   );

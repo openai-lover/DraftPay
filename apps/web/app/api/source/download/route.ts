@@ -5,7 +5,11 @@ import {
   draftPayContestAbi,
 } from "@draftpay/chain";
 import { readStoredArtifact } from "@draftpay/agent";
-import { consumeSourceChallenge } from "@/lib/source-access";
+import {
+  formatSourceChallenge,
+  isSourceChallengeFresh,
+  type SourceChallenge,
+} from "@/lib/source-access";
 import {
   createPublicClient,
   getAddress,
@@ -23,21 +27,29 @@ import { z } from "zod";
 export const runtime = "nodejs";
 
 const requestSchema = z.object({
-  nonce: z.string().uuid(),
+  challenge: z.object({
+    address: z.string().regex(/^0x[\da-fA-F]{40}$/),
+    contest: z.string().regex(/^0x[\da-fA-F]{40}$/),
+    transactionHash: z.string().regex(/^0x[\da-fA-F]{64}$/),
+    submissionId: z.string().regex(/^[1-9]\d*$/),
+    nonce: z.string().uuid(),
+    issuedAt: z.string().datetime(),
+    expiresAt: z.string().datetime(),
+  }),
   signature: z.string().regex(/^0x[\da-fA-F]+$/),
 });
 
 export async function POST(request: Request) {
   const parsed = requestSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return Response.json({ error: "Invalid source request" }, { status: 400 });
-  const challenge = consumeSourceChallenge(parsed.data.nonce);
-  if (!challenge) {
-    return Response.json({ error: "Challenge expired or already used" }, { status: 401 });
+  const challenge = parsed.data.challenge as SourceChallenge;
+  if (!isSourceChallengeFresh(challenge)) {
+    return Response.json({ error: "Challenge expired or invalid" }, { status: 401 });
   }
 
   const signatureValid = await verifyMessage({
     address: challenge.address as Address,
-    message: challenge.message,
+    message: formatSourceChallenge(challenge),
     signature: parsed.data.signature as Hex,
   });
   if (!signatureValid) return Response.json({ error: "Invalid wallet signature" }, { status: 401 });

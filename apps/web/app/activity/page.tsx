@@ -54,7 +54,7 @@ export default function ActivityPage() {
             </div>
           ))}
         </section>
-        <AgentRunPanel />
+        <AgentRunPanel hosted={process.env.VERCEL === "1"} />
       </div>
     </div>
   );

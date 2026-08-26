@@ -11,9 +11,10 @@
  * <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
  */
 
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 
 type Venue = "arc" | "l2";
+const VENUES: Venue[] = ["l2", "arc"];
 
 const FACTS: Record<
   Venue,
@@ -70,12 +71,10 @@ const REASONS = [
     title: "Selecting a winner and paying them is one moment, not two.",
     body: (
       <>
-        Arc runs Malachite, a Tendermint-derived BFT engine with deterministic
-        sub-second finality — there is no confirmation count to wait out and no
-        reorg to hedge against. A build contest lives or dies on that instant:
-        the client presses <em>Select</em>, and the builder&rsquo;s balance has
-        already moved. Arc&rsquo;s public testnet has settled north of 244
-        million transactions at roughly half-second finality since October 2025.
+        Arc runs Malachite, a Tendermint-derived BFT engine with deterministic sub-second finality —
+        there is no confirmation count to wait out and no reorg to hedge against. A build contest
+        lives or dies on that instant: the client presses <em>Select</em>, and the builder&rsquo;s
+        balance has already moved.
       </>
     ),
     wide: true,
@@ -85,11 +84,10 @@ const REASONS = [
     title: "An agent's costs and its winnings finally share a ledger.",
     body: (
       <>
-        Circle&rsquo;s Agent Stack settles agent spending in USDC down to
-        $0.000001. So when an agent buys the data, inference and tooling it needs
-        to enter a contest, DraftPay can show its true margin — inputs and prize
-        in the same column. That is what makes &ldquo;visible economics&rdquo; a
-        number instead of a slogan.
+        Circle&rsquo;s Agent Stack settles agent spending in USDC down to $0.000001. So when an
+        agent buys the data, inference and tooling it needs to enter a contest, DraftPay can show
+        its true margin — inputs and prize in the same column. That is what makes &ldquo;visible
+        economics&rdquo; a number instead of a slogan.
       </>
     ),
     wide: false,
@@ -99,10 +97,9 @@ const REASONS = [
     title: "Public rule, private outcome.",
     body: (
       <>
-        The split has to be auditable or the promise is worthless. A
-        builder&rsquo;s individual loss does not. Arc&rsquo;s selectively
-        shielded balances let DraftPay publish the rule and the proof while
-        keeping each entrant&rsquo;s ranking and payout their own business.
+        The split has to be auditable or the promise is worthless. A builder&rsquo;s individual loss
+        does not. Arc&rsquo;s selectively shielded balances let DraftPay publish the rule and the
+        proof while keeping each entrant&rsquo;s ranking and payout their own business.
       </>
     ),
     wide: false,
@@ -112,11 +109,10 @@ const REASONS = [
     title: "One contest, builders on four continents, no FX desk.",
     body: (
       <>
-        Talent for a build brief is global; treasuries are not. Circle&rsquo;s
-        Cross-Chain Transfer Protocol and Gateway let a client fund a contest
-        from wherever their USDC already sits, and Arc&rsquo;s built-in RFQ FX
-        engine settles a euro-denominated builder in EURC against a dollar prize
-        pool, on-chain, around the clock. The contest stays one object.
+        Talent for a build brief is global; treasuries are not. Circle&rsquo;s Cross-Chain Transfer
+        Protocol and Gateway let a client fund a contest from wherever their USDC already sits, and
+        Arc&rsquo;s built-in RFQ FX engine settles a euro-denominated builder in EURC against a
+        dollar prize pool, on-chain, around the clock. The contest stays one object.
       </>
     ),
     wide: true,
@@ -126,6 +122,25 @@ const REASONS = [
 export default function WhyArc() {
   const [venue, setVenue] = useState<Venue>("arc");
   const f = FACTS[venue];
+
+  function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, current: Venue) {
+    const currentIndex = VENUES.indexOf(current);
+    let nextIndex: number | null = null;
+
+    if (event.key === "ArrowLeft") nextIndex = (currentIndex - 1 + VENUES.length) % VENUES.length;
+    if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % VENUES.length;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = VENUES.length - 1;
+    if (nextIndex === null) return;
+
+    event.preventDefault();
+    const next = VENUES[nextIndex];
+    if (!next) return;
+    setVenue(next);
+    const tabs =
+      event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    tabs?.[nextIndex]?.focus();
+  }
 
   return (
     <section className="dparc">
@@ -138,10 +153,9 @@ export default function WhyArc() {
           only unit.
         </h2>
         <p className="dparc-lede">
-          DraftPay makes one promise: the money that goes into a contest is the
-          money that comes out, split by a rule the contract enforces. That
-          promise is only exactly true on a chain where the fee is denominated
-          in the prize.
+          DraftPay makes one promise: the money that goes into a contest is the money that comes
+          out, split by a rule the contract enforces. That promise is only exactly true on a chain
+          where the fee is denominated in the prize.
         </p>
 
         {/* ── Signature: the ledger test ── */}
@@ -149,13 +163,17 @@ export default function WhyArc() {
           <div className="dparc-testhead">
             <span className="dparc-testlabel">Settle one 100 USDC contest</span>
             <div className="dparc-tabs" role="tablist" aria-label="Settlement venue">
-              {(["l2", "arc"] as Venue[]).map((v) => (
+              {VENUES.map((v) => (
                 <button
                   key={v}
+                  id={`venue-tab-${v}`}
                   role="tab"
                   aria-selected={venue === v}
+                  aria-controls="venue-panel"
+                  tabIndex={venue === v ? 0 : -1}
                   className={`dparc-tab${venue === v ? " is-on" : ""}`}
                   onClick={() => setVenue(v)}
+                  onKeyDown={(event) => handleTabKeyDown(event, v)}
                 >
                   {v === "arc" ? "Arc" : "General-purpose L2"}
                 </button>
@@ -163,7 +181,12 @@ export default function WhyArc() {
             </div>
           </div>
 
-          <div className="dparc-testbody">
+          <div
+            className="dparc-testbody"
+            id="venue-panel"
+            role="tabpanel"
+            aria-labelledby={`venue-tab-${venue}`}
+          >
             <div className="dparc-receipt" data-state={venue} key={venue}>
               <div className="dparc-rhead">
                 <span className="dparc-rtitle">Settlement receipt</span>
@@ -237,8 +260,8 @@ export default function WhyArc() {
               <p className="dparc-readk">What the receipt is showing</p>
               <p className="dparc-caption">{f.caption}</p>
               <p className="dparc-readfoot">
-                Switch the venue above. The split never changes; what changes is
-                whether the contest can still be described as a single number.
+                Switch the venue above. The split never changes; what changes is whether the contest
+                can still be described as a single number.
               </p>
             </div>
           </div>
@@ -247,10 +270,7 @@ export default function WhyArc() {
         {/* ── Supporting reasons ── */}
         <div className="dparc-grid">
           {REASONS.map((r) => (
-            <article
-              key={r.kicker}
-              className={`dparc-card${r.wide ? " dparc-card--wide" : ""}`}
-            >
+            <article key={r.kicker} className={`dparc-card${r.wide ? " dparc-card--wide" : ""}`}>
               <span className="dparc-ck">{r.kicker}</span>
               <h3>{r.title}</h3>
               <p>{r.body}</p>
@@ -260,11 +280,10 @@ export default function WhyArc() {
 
         <div className="dparc-timing">
           <p>
-            <span>Arc mainnet beta lands this summer.</span> Escrowed,
-            rule-based, multi-party payout is not an exotic workload to schedule
-            for later — it is the first thing anyone will want to do with
-            programmable dollars. DraftPay is building it now so it is ready on
-            day one.
+            <span>DraftPay is testing the full settlement path on Arc today.</span> Escrowed,
+            rule-based, multi-party payout is not an exotic future workload — it is a practical use
+            of programmable dollars. Running it end to end on testnet now makes the behavior
+            inspectable before production deployment.
           </p>
         </div>
       </div>
@@ -284,7 +303,7 @@ function Row({ label, value, unit }: { label: string; value: string; unit: strin
 }
 
 const CSS = `
-.dparc{--ink:#0B0E14;--slate:#161B26;--line:#242C3D;--paper:#F2F0E9;--paper-2:#DEDACF;--paper-ink:#1A1D26;--usdc:#2775CA;--settle:#14B88A;--leak:#C0553D;--dim:#8A93A5;--bright:#F2F0E9;--mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;background:radial-gradient(1100px 520px at 12% -8%,rgba(39,117,202,.16),transparent 62%),var(--ink);color:var(--bright);font-family:var(--sans);padding:clamp(72px,11vw,148px) 24px;-webkit-font-smoothing:antialiased}
+.dparc{--ink:#0B0E14;--slate:#161B26;--line:#2B3548;--paper:#DCD9D1;--paper-2:#C7C3B9;--paper-ink:#171B25;--usdc:#78A3FF;--settle:#62DDB8;--leak:#9B3D2E;--dim:#A4B0C2;--bright:#F2F0E9;--mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;background:radial-gradient(1100px 520px at 12% -8%,rgba(39,117,202,.16),transparent 62%),var(--ink);color:var(--bright);font-family:var(--sans);padding:clamp(72px,11vw,148px) 24px;-webkit-font-smoothing:antialiased}
 .dparc-inner{max-width:1120px;margin:0 auto}
 .dparc-eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--usdc);margin:0 0 22px;display:flex;align-items:center;gap:12px}
 .dparc-eyebrow::after{content:'';height:1px;flex:0 0 56px;background:linear-gradient(90deg,var(--usdc),transparent)}
@@ -303,15 +322,15 @@ const CSS = `
 @keyframes dparc-flip{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:none}}
 .dparc-rhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-bottom:18px;margin-bottom:20px;border-bottom:1.5px solid var(--paper-ink)}
 .dparc-rtitle{font-size:14px;font-weight:600;letter-spacing:-.01em}
-.dparc-rmeta{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#6B7182;white-space:nowrap}
+.dparc-rmeta{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#4E5565;white-space:nowrap}
 .dparc-rows{font-family:var(--mono);font-size:13px}
 .dparc-row{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:7px 0}
-.dparc-k{color:#575E70}
+.dparc-k{color:#454C5C}
 .dparc-v{font-variant-numeric:tabular-nums;white-space:nowrap}
 .dparc-v b{font-weight:600;letter-spacing:-.01em}
-.dparc-v em{font-style:normal;color:#8A90A0;font-size:11px;margin-left:3px}
+.dparc-v em{font-style:normal;color:#555C6C;font-size:11px;margin-left:3px}
 .dparc-row--in .dparc-k,.dparc-row--in .dparc-v b{color:var(--paper-ink);font-weight:600}
-.dparc-note{display:block;font-style:normal;font-size:10px;letter-spacing:.04em;color:#8A90A0;margin-top:3px}
+.dparc-note{display:block;font-style:normal;font-size:10px;letter-spacing:.04em;color:#555C6C;margin-top:3px}
 .dparc-row--tot .dparc-k{color:var(--paper-ink);font-weight:600}
 .dparc-row--sub{padding:5px 0;font-size:11.5px}
 .dparc-row--sub .dparc-k,.dparc-row--sub .dparc-v b{color:#7A8091;font-weight:500}

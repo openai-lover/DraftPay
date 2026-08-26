@@ -17,7 +17,7 @@ export default function AgentProfilePage() {
       <div className="profile-grid">
         <section className="profile-identity">
           <div className="profile-monogram">NA</div>
-          <h1>{demoAgent.name}</h1>
+          <h2>{demoAgent.name}</h2>
           <p>{demoAgent.supportedSkill}</p>
           <EvidenceBadge mode={demoAgent.mode} />
           <div style={{ marginTop: 28 }}>
