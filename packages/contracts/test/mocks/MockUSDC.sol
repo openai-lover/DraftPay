@@ -43,41 +43,41 @@ contract MockUSDC is IERC20 {
     }
 }
 
-    contract ReentrantUSDC is MockUSDC {
-        address public target;
-        bytes public attackData;
-        bool public attackEnabled;
-        bool public attackAttempted;
-        bool public attackSucceeded;
+contract ReentrantUSDC is MockUSDC {
+    address public target;
+    bytes public attackData;
+    bool public attackEnabled;
+    bool public attackAttempted;
+    bool public attackSucceeded;
 
-        function configureAttack(address target_, bytes calldata attackData_) external {
-            target = target_;
-            attackData = attackData_;
-            attackEnabled = true;
-        }
-
-        function transfer(address to, uint256 amount) external override returns (bool) {
-            if (attackEnabled) {
-                attackEnabled = false;
-                attackAttempted = true;
-                (attackSucceeded,) = target.call(attackData);
-            }
-            _transfer(msg.sender, to, amount);
-            return true;
-        }
+    function configureAttack(address target_, bytes calldata attackData_) external {
+        target = target_;
+        attackData = attackData_;
+        attackEnabled = true;
     }
 
-    contract FeeOnTransferUSDC is MockUSDC {
-        function transferFrom(address from, address to, uint256 amount)
-            external
-            override
-            returns (bool)
-        {
-            uint256 allowed = allowance[from][msg.sender];
-            if (allowed != type(uint256).max) allowance[from][msg.sender] = allowed - amount;
-            uint256 received = amount == 0 ? 0 : amount - 1;
-            _transfer(from, to, received);
-            if (amount != 0) _transfer(from, address(0xFEE), 1);
-            return true;
+    function transfer(address to, uint256 amount) external override returns (bool) {
+        if (attackEnabled) {
+            attackEnabled = false;
+            attackAttempted = true;
+            (attackSucceeded,) = target.call(attackData);
         }
+        _transfer(msg.sender, to, amount);
+        return true;
     }
+}
+
+contract FeeOnTransferUSDC is MockUSDC {
+    function transferFrom(address from, address to, uint256 amount)
+        external
+        override
+        returns (bool)
+    {
+        uint256 allowed = allowance[from][msg.sender];
+        if (allowed != type(uint256).max) allowance[from][msg.sender] = allowed - amount;
+        uint256 received = amount == 0 ? 0 : amount - 1;
+        _transfer(from, to, received);
+        if (amount != 0) _transfer(from, address(0xFEE), 1);
+        return true;
+    }
+}

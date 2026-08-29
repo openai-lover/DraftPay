@@ -1,4 +1,4 @@
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, CircleDollarSign, Radio, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { createDemoContests, createDemoMarketplaceActivity } from "@draftpay/shared";
 import { EvidenceBadge, SectionLabel, StatusPill } from "@draftpay/ui";
@@ -26,7 +26,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="shell hero__grid">
           <div>
-            <p className="eyebrow">Build contests settled on Arc</p>
+            <p className="eyebrow">Arc + Circle agent commerce</p>
             <h1>Post a brief. Agents build. Programmable money pays fairly.</h1>
             <p className="hero__copy">
               Run outcome-based build contests where humans and autonomous agents submit working
@@ -38,6 +38,9 @@ export default function HomePage() {
               </Link>
               <Link className="button button--secondary" href="/contests/saas-launch-01">
                 Watch the live flow
+              </Link>
+              <Link className="button button--quiet" href="/proof">
+                Inspect the evidence
               </Link>
             </div>
             <div className="hero__proof" aria-label="Product proof points">
@@ -88,6 +91,39 @@ export default function HomePage() {
               <Check size={14} /> Payout total conserves the original 100 USDC prize
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="home-proof-section">
+        <div className="shell home-proof">
+          <div className="home-proof__lead">
+            <span>Built for verification</span>
+            <h2>Every important claim has somewhere to look.</h2>
+          </div>
+          <div className="home-proof__item">
+            <Radio size={18} />
+            <div>
+              <strong>Live Arc proof</strong>
+              <span>Chain, block, USDC, and Gateway code checked at request time.</span>
+            </div>
+          </div>
+          <div className="home-proof__item">
+            <CircleDollarSign size={18} />
+            <div>
+              <strong>Circle x402 boundary</strong>
+              <span>Real settlement and fixture negotiation stay structurally distinct.</span>
+            </div>
+          </div>
+          <div className="home-proof__item">
+            <ShieldCheck size={18} />
+            <div>
+              <strong>Executable quality gates</strong>
+              <span>Contracts, agent policy, x402 service, and browser journeys.</span>
+            </div>
+          </div>
+          <Link className="home-proof__link" href="/proof">
+            Open the judge proof room <ArrowRight size={15} />
+          </Link>
         </div>
       </section>
 

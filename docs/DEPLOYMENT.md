@@ -108,6 +108,8 @@ pnpm web:deploy
 
 Run link/deploy from the monorepo root. Choose `apps/web` as the Vercel project Root Directory and keep outside-root workspace sources enabled. Add the production environment variables in the linked Vercel project before the final deployment. The first command requires an interactive Vercel login; that is the exact external step this workspace cannot complete without the operator.
 
+Set `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin so canonical, Open Graph, robots, and sitemap URLs resolve to the public deployment.
+
 Deploy `apps/x402-service` separately to a Node-compatible host, then point `X402_SERVICE_URL` and `X402_ALLOWED_ORIGIN` at it and redeploy the web app.
 
 ## Verification checklist
@@ -121,3 +123,5 @@ Deploy `apps/x402-service` separately to a Node-compatible host, then point `X40
 - Terminal event recipients equal displayed payout rows and the prize sum is exact.
 - Every ArcScan URL resolves to the same successful transaction shown in the UI.
 - The public URL loads the winner and no-winner flows at desktop and 390px mobile width.
+- `/proof` loads and its live panel reports the expected chain, USDC, and Circle Gateway bytecode.
+- `/api/health` returns `status: "ok"`; investigate any `network.status: "degraded"` result before judging live chain evidence.

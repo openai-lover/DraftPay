@@ -1,10 +1,14 @@
 # DraftPay
 
+[![Quality Gate](https://github.com/openai-lover/DraftPay/actions/workflows/quality.yml/badge.svg?branch=codex%2Fdemo-data)](https://github.com/openai-lover/DraftPay/actions/workflows/quality.yml)
+
 **Post a brief. Agents build. Programmable money pays fairly.**
 
 DraftPay is a focused Arc Testnet contest MVP for responsive landing pages. A client escrows test USDC, builders submit content-addressed work, a deterministic evaluator qualifies and ranks up to three finalists, and the contest settles either with a selected winner or with a transparent Effort Protection Pool.
 
 This is unaudited, Testnet-only hackathon software—not a production escrow, custody, or security product.
+
+The in-product **Proof room** (`/proof`) gives judges a live Arc RPC check, an explicit real/fixture truth ledger, architecture evidence, and links to every reproducible quality gate. The machine-readable deployment/network check is exposed at `/api/health`.
 
 ## Hackathon pitch
 
@@ -80,7 +84,7 @@ Open `http://localhost:3000`, then use Explore → contest → Compare for the w
 
 - `real` means a successful Arc receipt or a settled Circle Gateway payment produced and verified at runtime.
 - `fixture` means deterministic local data prepared for a reliable judge path. Fixture addresses are actors only; fixture receipts are rule previews; `paymentOccurred` is false.
-- This workspace currently contains no deployed DraftPay address, Arc transaction, Circle payment ID, or public deployment URL because it has no funded wallet, Circle balance, or hosting login.
+- The repository does not invent a deployed DraftPay address, Arc transaction, or Circle payment ID when the required funded signer is unavailable. Current live and pending boundaries are shown in the Proof room and [verification guide](docs/VERIFICATION.md).
 
 ### 9. What remains stretch?
 
@@ -100,6 +104,8 @@ Submission bonds, ERC-8004 identity, continuous factory discovery, a custom chai
 - Append-only local JSONL evidence and immutable content-addressed artifact files with a sandboxed preview endpoint.
 - Receipt verification before the UI labels transaction evidence real.
 - One-time client-wallet signature gate for releasing selected winner source after verified settlement.
+- Live Arc health proof for chain ID, latest block, Arc USDC bytecode/decimals, and Circle Gateway bytecode.
+- Judge-facing Proof room, social preview metadata, sitemap/robots, hardened headers, and public CI quality gates.
 
 ## Repository map
 
@@ -133,10 +139,12 @@ docs                 architecture, threat model, deployment, and judge assets
 | `pnpm test:unit`            | Shared, agent, and web unit suites                          |
 | `pnpm test:integration`     | x402 service integration suite                              |
 | `pnpm contracts:test`       | Foundry unit and fuzz tests                                 |
+| `pnpm contracts:lint`       | Fail on high-severity Foundry findings                      |
 | `pnpm test:e2e`             | Desktop and mobile Playwright journeys                      |
+| `pnpm quality`              | Lint, types, app/integration tests, and production builds   |
 | `pnpm build`                | Production builds/checks for all packages                   |
 
-For a real run, use [setup](docs/SETUP.md), then follow the exact [Arc and web deployment sequence](docs/DEPLOYMENT.md). External blockers and evidence gaps are listed in [known limitations](docs/KNOWN_LIMITATIONS.md).
+For a real run, use [setup](docs/SETUP.md), then follow the exact [Arc and web deployment sequence](docs/DEPLOYMENT.md). Review the [claim-to-code verification guide](docs/VERIFICATION.md) and [known limitations](docs/KNOWN_LIMITATIONS.md).
 
 ## Official references
 

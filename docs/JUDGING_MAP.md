@@ -1,13 +1,13 @@
 # DraftPay Judging Map
 
-Last updated: 2026-07-31
+Last updated: 2026-08-29
 Evidence status: local implementation is complete; external Arc/Circle/hosting evidence is pending credentials.
 
 No transaction hash, address, ArcScan URL, payment ID, deployment, or hosted URL is inserted until it exists and has been checked.
 
 | Requirement            | Implementation                                                                                | Demo evidence                               | Remaining boundary                         |
 | ---------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------------ |
-| Arc Testnet            | Chain `5042002` assertion, verified RPC/explorer, persistent Testnet warning                  | Connect wallet; inspect live contest        | Real write needs wallet/faucet             |
+| Arc Testnet            | Chain `5042002` assertion, live RPC/USDC/Gateway proof, wallet switching, persistent warning  | Open Proof room; connect wallet             | Real write needs a funded signer           |
 | USDC escrow            | Per-contest exact balance-delta funding pull                                                  | Create → approve → fund                     | Factory deployment pending                 |
 | Deadline state machine | Created/Open/Evaluation/Awaiting/terminal enum and guarded transitions                        | Winner and expired no-winner paths          | Block timestamps; unaudited                |
 | Winner settlement      | Client selects only a ranked qualified ID; terminal 95/5 payout                               | Compare → Select winner → Receipt           | Real receipt pending                       |
@@ -25,7 +25,8 @@ No transaction hash, address, ArcScan URL, payment ID, deployment, or hosted URL
 | Artifact proof         | Keccak hash, content-addressed bytes, sandboxed public URI                                    | Hash and proof receipt                      | Durable object store is stretch            |
 | Direct chain authority | Agent/UI read contract state and receipts directly                                            | Real contest input says “Verified from Arc” | No custom indexer/database by design       |
 | Real/fixture truth     | Structural evidence modes and no fake receipts                                                | Badges throughout product                   | Presenter must preserve labels             |
-| Winner/no-winner E2E   | Desktop and mobile Playwright journeys                                                        | `pnpm test:e2e` — 8 / 8 passed              | Browser binaries must be installed locally |
+| Winner/no-winner E2E   | Desktop and mobile Playwright journeys                                                        | `pnpm test:e2e` — 14 / 14 passed            | Browser binaries must be installed locally |
+| Public verification    | Judge Proof room and machine-readable Arc health endpoint                                     | `/proof` and `/api/health`                  | Hosting deployment approval pending        |
 | Deployment command     | Vercel monorepo link/deploy command documented                                                | `pnpm web:deploy`                           | Interactive hosting login pending          |
 
 ## Local evidence
@@ -47,11 +48,11 @@ The deterministic `pnpm demo:run` path must report participate, no fixture payme
 Current local result snapshot:
 
 - Foundry: 28 passed, including 256 winner and 256 no-winner conservation fuzz runs and the finalist-cap boundary cases.
-- Unit: shared 11, agent 31, web 3; all passed.
+- Unit: shared 13, agent 31, web 7; all passed.
 - x402 integration/config: 5 passed after allowing its loopback test listener.
 - Strict TypeScript: all seven TypeScript workspaces passed.
 - ESLint, Prettier, Solidity format, contract size build, and Next.js production build passed.
-- Playwright: eight desktop/mobile cases passed, covering create, winner, no-winner, and mobile overflow paths.
+- Playwright: 14 desktop/mobile cases passed, covering wallet, Proof room, create, winner, no-winner, and overflow paths.
 - Fixture demo: participate, `paymentOccurred: false`, exact seeded hash, qualified, no onchain submission.
 - Fixture demo before/after the purchased analysis: 72.00% → 64.50% qualification prior, 0.080 → 0.110 USDC build-cost estimate, 68.26 → 61.105 USDC expected value, with each adjustment itemised in basis points.
 

@@ -1,6 +1,6 @@
 # Known Limitations and Manual Steps
 
-Last updated: 2026-07-31
+Last updated: 2026-08-29
 
 ## Exact external actions still required
 
@@ -41,7 +41,8 @@ No item above is represented as complete in this repository.
 - Seeded settlement receipts are payout previews, not transactions.
 - Real receipt UI requires a valid transaction hash and contest address, then validates the Arc receipt before showing a Real badge.
 - There are currently no DraftPay contract addresses, ArcScan transaction links, real x402 receipt IDs, or public deployment URLs to report.
+- The Proof room performs a genuine read-only Arc RPC check; it does not turn that read into a claim that DraftPay contracts were deployed.
 
 ## Browser verification
 
-The desktop/mobile create, winner, no-winner, and mobile-overflow Playwright journeys pass locally. Chromium must be installed in a fresh environment before running `pnpm test:e2e`.
+Fourteen desktop/mobile wallet, Proof room, create, winner, no-winner, and mobile-overflow Playwright journeys pass locally. Chromium must be installed in a fresh environment before running `pnpm test:e2e`.
