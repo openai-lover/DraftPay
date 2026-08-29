@@ -8,11 +8,13 @@ node_modules/
 .demo/
 .next/
 out/
+outputs/
 coverage/
 playwright-report/
 test-results/
 dist/
 cache/
 broadcast/
+work/
 packages/contracts/lib/
 *.log

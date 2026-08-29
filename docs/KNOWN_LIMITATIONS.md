@@ -1,19 +1,13 @@
 # Known Limitations and Manual Steps
 
-Last updated: 2026-08-29
+Last updated: 2026-08-30
 
-## Exact external actions still required
+## Final submission actions still required
 
-1. Fund and unlock a human-controlled Arc Testnet deployer.
-2. Run `pnpm contracts:deploy:arc`; capture and verify the factory receipt/address.
-3. Create and fund two real contests, one for each terminal outcome.
-4. Supply dedicated evaluator and builder/agent Testnet EOAs.
-5. Configure and fund Circle Gateway Nanopayments; produce one genuine settled payment ID.
-6. Log into Vercel, link the monorepo web project with root `apps/web`, add production environment values, and run `pnpm web:deploy`.
-7. Deploy the x402 service to a Node-compatible host and point the web/agent configuration to it.
-8. Execute winner and no-winner settlements and retain the successful ArcScan links.
+Completed on Arc Testnet: dedicated low-balance wallets, factory deployment, real x402 payment, generated artifact verification, six proof submissions, evaluator qualification/ranking, winner settlement, finalist-bearing 15/10/5 no-winner settlement, and the earlier zero-submission full-refund branch. The web app and x402 seller are public on Vercel.
 
-No item above is represented as complete in this repository.
+1. Upload the final three-minute demo video and verify its public sharing permissions.
+2. Submit the final public app, repository, deck, video, and evidence links on the hackathon project page.
 
 ## Product limitations
 
@@ -24,10 +18,10 @@ No item above is represented as complete in this repository.
   qualified work is recorded onchain via `QualifiedBeyondFinalistCap` and earns nothing.
 - Only responsive static landing pages are supported.
 - Agent runs are explicitly triggered; continuous factory discovery/watchers are stretch scope.
-- Real model generation needs `MODEL_PROVIDER_URL` and `MODEL_PROVIDER_API_KEY`. Without them the
-  agent uses the deterministic fixture generator and labels the artifact `fixture`.
+- The live proof uses DraftPay's deterministic build adapter, not an LLM. OpenAI-compatible and
+  raw HTTP model adapters remain available when provider credentials are configured.
 - Submitted repositories are never installed or executed.
-- Generated artifact HTML uses local storage in the MVP. Production needs durable object storage and a real screenshot worker.
+- Final evidence artifacts are content-addressed and published with the app; arbitrary future uploads would need durable object storage.
 - Process-local spending counters, concurrency lock, and web rate limiter are not distributed controls.
 - Circle Gateway's current buyer integration uses an EOA.
 - Submission bonds and ERC-8004 identity are stretch features and are not implemented.
@@ -40,9 +34,9 @@ No item above is represented as complete in this repository.
   priced, but records `paymentOccurred: false` and `amountAtomic: "0"` because nothing settled.
 - Seeded settlement receipts are payout previews, not transactions.
 - Real receipt UI requires a valid transaction hash and contest address, then validates the Arc receipt before showing a Real badge.
-- There are currently no DraftPay contract addresses, ArcScan transaction links, real x402 receipt IDs, or public deployment URLs to report.
-- The Proof room performs a genuine read-only Arc RPC check; it does not turn that read into a claim that DraftPay contracts were deployed.
+- The public evidence JSON and landing timeline link the real x402 receipt, content-addressed artifact, submission, evaluation, winner settlement, and finalist-bearing no-winner settlement. Secondary prepared finalists remain labeled fixture in artifact metadata.
+- The Proof Room's live health panel proves current Arc RPC access and expected contract bytecode; it does not by itself prove DraftPay writes. Factory, submission, evaluation, and settlement writes are separately linked through the public evidence bundle and ArcScan.
 
 ## Browser verification
 
-Fourteen desktop/mobile wallet, Proof room, create, winner, no-winner, and mobile-overflow Playwright journeys pass locally. Chromium must be installed in a fresh environment before running `pnpm test:e2e`.
+All 24 desktop/mobile create, wallet, Proof Room, winner, no-winner, accessibility, and mobile-overflow Playwright journeys pass locally. Chromium must be installed in a fresh environment before running `pnpm test:e2e`.

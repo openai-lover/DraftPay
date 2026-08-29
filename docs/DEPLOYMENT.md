@@ -1,6 +1,29 @@
 # Arc Testnet and Web Deployment
 
-No deployment was executed in this workspace because no funded human-controlled Arc Testnet account, Circle Gateway balance, or hosting login was supplied. Record evidence only after each receipt or deployment succeeds.
+Final public deployment and live-run evidence (2026-08-02):
+
+- Web: <https://draft-pay-web.vercel.app>
+- x402 seller: <https://draft-pay-x402-service.vercel.app/health>
+- Canonical evidence index: <https://draft-pay-web.vercel.app/evidence/final-run.json>
+- Winner contest: `0xA5aD6018afd517429C64469cC2dFFE09c5f1853a`
+- Finalist no-winner contest: `0xeF753F526B4fbB39b4913eAfc7dE5C85471F7e49`
+
+The canonical evidence index contains the exact funding, submission, evaluator, winner, and no-winner ArcScan links. The sequence below remains the reproducible operator procedure.
+
+Dedicated Testnet-only EOAs are funded. The factory and multiple isolated 5-USDC contests are deployed on Arc Testnet. The builder deposited one USDC into Circle Gateway and completed settled 0.01-USDC x402 requests. The final run includes a generated artifact, real Chromium verification, six proof submissions, evaluator qualification/ranking, winner settlement, and finalist-bearing no-winner settlement. An earlier contest separately proves the zero-submission full-refund path.
+
+Current checked evidence:
+
+- Factory: `0x15933a0368787066dF3cF2f0155Eb978dc143828`
+- Factory deployment: `0xbb9239676824ef171e05e7e0faeaf3d98b3596dc477a5277610635b2c7846e59`
+- Gateway approval: `0x3860d2bb5e8ac7db1b783a0fd7c0249e462952fc45bab6f496a15f17a72fafa4`
+- Gateway deposit: `0x1fc82cc597d262031ddfcb8fb720f285158225bc4835dc3b7a80f24e3d95223a`
+- Winner contest: `0xA5aD6018afd517429C64469cC2dFFE09c5f1853a`
+- Winner funding: `0x93737681dca0d820f9cc23ec67b0dcc82c07ac8c245982f7a0b75da60a396756`
+- No-winner contest: `0xeF753F526B4fbB39b4913eAfc7dE5C85471F7e49`
+- No-winner funding: `0x07cfe8be121d9e70616b38ef8f4eb516e624eb47eb9524a711782c2d136b602c`
+- Zero-submission refund settlement: `0xc2526124286edfb50400cd1f969fec007388efc9969ad90c507319c94e60f2a7`
+- Settled x402 payment ID: `8f97cd76-cfd1-404a-8bec-5c036e8ae6f2`
 
 Read-only verification on 2026-07-21 confirmed Arc Testnet chain ID `5042002`, the USDC interface at `0x3600000000000000000000000000000000000000`, and 6 token decimals. Re-check official Arc documentation immediately before a write.
 
@@ -14,20 +37,22 @@ Read-only verification on 2026-07-21 confirmed Arc Testnet chain ID `5042002`, t
 | Explorer  | `https://testnet.arcscan.app`     |
 | Gas asset | USDC, native view                 |
 
-Fund a dedicated Testnet deployer and import it into Foundry's encrypted keystore:
+Provision dedicated Testnet-only deployer, builder, and evaluator EOAs. Generated keys are written only to the ignored `.env.local` file and are never printed:
 
 ```bash
-cast wallet import draftpay-deployer
+pnpm wallets:provision:testnet
+pnpm arc:check
 ```
+
+Request Arc Testnet USDC for the printed addresses from the Circle Faucet. The public faucet currently sends 20 USDC per address every two hours.
 
 ## 2. Deploy the factory
 
 ```bash
-export ARC_TESTNET_RPC_URL=https://rpc.testnet.arc.network
-pnpm contracts:deploy:arc
+pnpm arc:deploy:factory
 ```
 
-The script deploys only `DraftPayContestFactory`, pinned to the verified Arc USDC interface. Capture the address, successful transaction hash, block number, and ArcScan URL. Do not report an address until its receipt succeeds and `cast code <address>` returns bytecode on chain ID 5042002.
+The script deploys only `DraftPayContestFactory`, pins the verified Arc USDC interface, verifies resulting bytecode, updates the ignored local environment, and records non-secret evidence under `.demo/arc-deployment.json`.
 
 ## 3. Create and fund contests
 
@@ -48,7 +73,9 @@ AGENT_SUBMIT_CONTEST_ADDRESS=0x...
 AGENT_CONTEST_METADATA_PATH=/absolute/path/draftpay-contest-metadata.json
 ```
 
-Create two independent contests for the two terminal demo outcomes because settlement is final.
+For the reproducible 5-USDC demo pair, run `pnpm arc:create:contests`. It creates and funds independent winner and no-winner contests and writes their exact approved metadata under `.demo/deployments` because settlement is final.
+
+The default winner windows are two hours for submission and four hours for selection. The no-winner receipt path defaults to ten and twenty minutes so it can be completed during a live verification session. Override the four `ARC_*_WINDOW_SECONDS` values before creation when a longer rehearsal window is required.
 
 ## 4. Run the Builder Agent and evaluator
 
@@ -88,6 +115,17 @@ X402_ALLOWED_ORIGIN=https://your-service.example
 ```
 
 Start `pnpm x402`, fund the agent's current Circle Gateway Testnet path, and run the agent. Label evidence real only when the buyer returns a settled payment ID and a paid response. The JSONL record must have `mode: "real"` and `paymentOccurred: true`.
+
+```bash
+pnpm gateway:check
+pnpm gateway:deposit
+```
+
+For a public Vercel deployment, omit all deployer, builder, and evaluator private keys. Hosted
+`/api/agent/run` requests always fail closed before the Playwright, wallet, or x402 modules load.
+The public judging app therefore remains read-only while funded Testnet actions run only from the
+local operator environment. The x402 seller service needs only the public seller address; it never
+needs the seller wallet private key.
 
 ## 6. Execute both outcomes
 

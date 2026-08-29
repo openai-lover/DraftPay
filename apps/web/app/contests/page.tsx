@@ -35,7 +35,8 @@ export default function ContestsPage() {
         <h1>Working products, not proposals.</h1>
         <div className="page-header__meta">
           <StatusPill tone="blue">Responsive landing pages</StatusPill>
-          <span>One focused category for a reliable demo</span>
+          <EvidenceBadge mode="fixture" />
+          <span>One focused category with clear settlement rules</span>
         </div>
       </header>
       <section aria-label="Contest list">
@@ -46,7 +47,6 @@ export default function ContestsPage() {
             <div className="contest-row" key={contest.id}>
               <div>
                 <div className="contest-row__meta">
-                  <EvidenceBadge mode={contest.mode} />
                   <span>
                     {contest.clientName} · updated {relativeTime(contest.updatedAt)}
                   </span>
@@ -64,7 +64,7 @@ export default function ContestsPage() {
                 <small>{contest.qualifiedCount} qualified</small>
               </div>
               <div>
-                <span className="metric-label">Demo state</span>
+                <span className="metric-label">State</span>
                 <StatusPill tone={presentation.tone}>{presentation.label}</StatusPill>
               </div>
               <Link
@@ -80,8 +80,7 @@ export default function ContestsPage() {
       </section>
       <div style={{ padding: "48px 0 96px" }}>
         <div className="notice notice--amber">
-          Seeded demo data. The activity, prize rules, and outcomes above are fictional product
-          scenarios; fixture rows never claim a contract, payment, or transaction.
+          Illustrative fixture data. These rows never claim a contract, payment, or transaction.
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import {
 } from "@draftpay/shared";
 import { keccak256, toBytes } from "viem";
 import { decideParticipation, type AgentDecisionInput, type AgentDecisionRecord } from "./decision";
+import { verifyLandingPageInBrowser } from "./browser-verifier";
 import type { GenerationBrief, ModelAdapter } from "./model-adapter";
 import { verifyLandingPage, type VerificationResult } from "./verification";
 import type { PaidBriefAnalysisResult, X402BriefClient } from "./x402-client";
@@ -64,7 +65,11 @@ export async function runBuilderAgent(input: BuilderRunInput): Promise<BuilderRu
   if (preliminaryDecision.decision === "skip") return { ...idle, decision: preliminaryDecision };
 
   // 2. Price the tool, then re-decide against the advertised price before authorising payment.
-  const quotedX402CostAtomic = await input.x402.quote();
+  const analysisRequest = {
+    brief: input.contest.brief,
+    requirements: input.contest.requirements.map((requirement) => requirement.label),
+  };
+  const quotedX402CostAtomic = await input.x402.quote(analysisRequest);
   const quotedDecision = decideParticipation({
     ...commonDecisionInput,
     x402CostAtomic: quotedX402CostAtomic,
@@ -74,10 +79,7 @@ export async function runBuilderAgent(input: BuilderRunInput): Promise<BuilderRu
   }
 
   // 3. Buy the analysis.
-  const analysis = await input.x402.analyze({
-    brief: input.contest.brief,
-    requirements: input.contest.requirements.map((requirement) => requirement.label),
-  });
+  const analysis = await input.x402.analyze(analysisRequest);
 
   // 4. Spend the information: recalibrate the qualification prior and adopt the analysis's own
   //    build-cost estimate in place of the agent's static guess.
@@ -116,12 +118,13 @@ export async function runBuilderAgent(input: BuilderRunInput): Promise<BuilderRu
   };
   const artifact = await input.model.generateLandingPage(generationBrief);
   const contentHash = keccak256(toBytes(artifact.html));
+  const browser = await verifyLandingPageInBrowser(artifact.html);
   const verification = verifyLandingPage({
     html: artifact.html,
     requiredHeadline: input.contest.requiredHeadline,
     contentHash,
     knownContentHashes: input.knownContentHashes,
-    previewLoaded: true,
+    browser,
   });
 
   return {

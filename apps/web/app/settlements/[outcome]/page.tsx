@@ -1,5 +1,6 @@
 import { noWinnerSettlementPreview, winnerSettlementPreview } from "@draftpay/shared";
 import { SectionLabel } from "@draftpay/ui";
+import { notFound } from "next/navigation";
 import { isAddress, isHash, type Address, type Hash } from "viem";
 import { RealSettlementReceipt } from "@/components/real-settlement-receipt";
 import { SettlementReceipt } from "@/components/settlement-receipt";
@@ -14,6 +15,7 @@ export default async function SettlementPage({
   searchParams: Promise<{ tx?: string; contest?: string }>;
 }) {
   const [{ outcome }, query] = await Promise.all([params, searchParams]);
+  if (outcome !== "winner" && outcome !== "no-winner") notFound();
   const preview = outcome === "no-winner" ? noWinnerSettlementPreview : winnerSettlementPreview;
   const hasValidEvidence = Boolean(
     query.tx && query.contest && isHash(query.tx) && isAddress(query.contest),

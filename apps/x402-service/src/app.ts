@@ -1,11 +1,12 @@
 import { createGatewayMiddleware } from "@circle-fin/x402-batching/server";
+import express, { type NextFunction, type Request, type Response } from "express";
+import { isAddress } from "viem";
 import {
   analyzeBrief,
   briefAnalysisRequestSchema,
   type BriefAnalysisRequest,
-} from "@draftpay/shared";
-import express, { type NextFunction, type Request, type Response } from "express";
-import { isAddress } from "viem";
+} from "./analysis.js";
+import { readServiceConfig } from "./config.js";
 
 type PaidRequest = Request & {
   payment?: {
@@ -62,6 +63,18 @@ function analyze(request: Request, response: Response): void {
   response.json(analyzeBrief(parsed.data as BriefAnalysisRequest));
 }
 
+function validateBrief(request: Request, response: Response, next: NextFunction): void {
+  const parsed = briefAnalysisRequestSchema.safeParse(request.body);
+  if (!parsed.success) {
+    response
+      .status(400)
+      .json({ error: "Invalid brief analysis request", issues: parsed.error.issues });
+    return;
+  }
+  request.body = parsed.data;
+  next();
+}
+
 export function createApp(config: X402ServiceConfig) {
   const app = express();
   app.disable("x-powered-by");
@@ -73,7 +86,7 @@ export function createApp(config: X402ServiceConfig) {
     response.json({ service: "draftpay-brief-analysis", mode: config.mode, status: "ok" });
   });
 
-  app.post("/fixture/brief-analysis", (request, response) => {
+  app.post("/fixture/brief-analysis", validateBrief, (request, response) => {
     response.setHeader("x-draftpay-evidence-mode", "fixture");
     analyze(request, response);
   });
@@ -89,6 +102,7 @@ export function createApp(config: X402ServiceConfig) {
     });
     app.post(
       "/x402/brief-analysis",
+      validateBrief,
       gateway.require(config.price),
       (request: PaidRequest, response) => {
         if (!request.payment?.verified) {
@@ -114,3 +128,5 @@ export function createApp(config: X402ServiceConfig) {
 
   return app;
 }
+
+export default createApp(readServiceConfig().app);

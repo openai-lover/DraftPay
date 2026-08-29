@@ -1,6 +1,6 @@
 # DraftPay Verification Guide
 
-Last updated: 2026-08-29
+Last updated: 2026-08-30
 
 This document is the fastest route from a DraftPay claim to executable or independently checkable evidence. DraftPay never promotes fixture data to onchain evidence.
 
@@ -14,6 +14,14 @@ Open `/proof` on the deployed web application. Its live network panel calls Arc 
 - the Circle Gateway Wallet at `0x0077777d7EBA4688BDeF3E311b846F25870A19B9` with deployed bytecode.
 
 The same machine-readable result is available at `/api/health`. A temporary RPC outage reports `network.status: "degraded"` without pretending the proof succeeded.
+
+Public entry points:
+
+- Proof Room: <https://draft-pay-web.vercel.app/proof>
+- Machine-readable health: <https://draft-pay-web.vercel.app/api/health>
+- Canonical execution evidence: <https://draft-pay-web.vercel.app/evidence/final-run.json>
+- Winner settlement: <https://testnet.arcscan.app/tx/0x1ecbdd4ebe4819e187f6928ac7474d8c03406bc2840a8175c1293346bf2d6906>
+- No-winner settlement: <https://testnet.arcscan.app/tx/0x5a00874bacb95b830d43738c67cd5722707d3f152c6d39b9a71e32c5d34c68a5>
 
 ## One-command application gate
 
@@ -44,9 +52,9 @@ The Foundry job also requires a clean `forge lint --severity high` result before
 
 ## Evidence semantics
 
-`real` is reserved for a successful Arc receipt or settled Circle payment that was verified at runtime. `fixture` is deterministic sample data for the judge path. `pending` identifies an external action that still needs a funded account or human signature.
+`real` is reserved for a successful Arc receipt or settled Circle payment that was verified at runtime. `fixture` is deterministic sample data for the judge path. `pending` identifies an external action that still needs a funded account or human signature. The final public evidence contains the deployed factory, six submissions, evaluator writes, both settlement outcomes, a settled x402 purchase, and its content-addressed artifact.
 
-The repository does not contain private keys, wallet seed phrases, fabricated payment IDs, or invented ArcScan links. A factory address must have successful bytecode and receipt checks before it is added to public configuration.
+The repository does not contain private keys, wallet seed phrases, fabricated payment IDs, or invented ArcScan links. The published factory is `0x15933a0368787066dF3cF2f0155Eb978dc143828`; its bytecode and deployment receipt were checked before it was added to public evidence.
 
 ## Manual onchain verification
 

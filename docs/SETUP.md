@@ -18,6 +18,7 @@ No database or custom chain indexer is required. Arc is authoritative and the ap
 corepack enable
 pnpm install --frozen-lockfile
 cp .env.example .env.local
+pnpm wallets:provision:testnet
 ```
 
 If `forge --version` fails, install Foundry from its official installer:
@@ -51,7 +52,7 @@ Open `http://localhost:3000`. The winner/no-winner previews and receipt previews
 
 The agent appends public, non-secret decisions, tool-payment facts, and confirmed proof records to `.demo/evidence.jsonl`. Verified generated HTML is stored by content hash under `.demo/artifacts`. `DRAFTPAY_EVIDENCE_PATH` and `DRAFTPAY_ARTIFACT_PATH` may relocate those paths.
 
-No screenshot is claimed unless captured. The generated metadata uses `screenshotStatus: "not-captured"` by default.
+No screenshot is claimed unless captured. The generated metadata uses `screenshotStatus: "not-captured"` by default. Qualification still performs a real headless-Chromium render at 390×844 and fails closed when the preview, CTA, form, or mobile overflow check fails.
 
 ## Services
 
@@ -92,6 +93,8 @@ Playwright needs Chromium once per machine:
 ```bash
 pnpm --filter @draftpay/web exec playwright install chromium
 ```
+
+The same Chromium installation is used by the Builder Agent's runtime verifier.
 
 ## Environment groups
 

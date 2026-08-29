@@ -1,37 +1,63 @@
 # DraftPay Judging Map
 
-Last updated: 2026-08-29
-Evidence status: local implementation is complete; external Arc/Circle/hosting evidence is pending credentials.
+Last updated: 2026-08-30
 
-No transaction hash, address, ArcScan URL, payment ID, deployment, or hosted URL is inserted until it exists and has been checked.
+Evidence status: the public app, public x402 seller, real paid agent build, content-addressed artifact, six Arc submissions, evaluator writes, winner payout, finalist-bearing no-winner payout, and zero-qualified refund branch have all been executed. Fixture evidence remains structurally labeled and is not substituted for a transaction.
 
-| Requirement            | Implementation                                                                                | Demo evidence                               | Remaining boundary                         |
-| ---------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------------ |
-| Arc Testnet            | Chain `5042002` assertion, live RPC/USDC/Gateway proof, wallet switching, persistent warning  | Open Proof room; connect wallet             | Real write needs a funded signer           |
-| USDC escrow            | Per-contest exact balance-delta funding pull                                                  | Create → approve → fund                     | Factory deployment pending                 |
-| Deadline state machine | Created/Open/Evaluation/Awaiting/terminal enum and guarded transitions                        | Winner and expired no-winner paths          | Block timestamps; unaudited                |
-| Winner settlement      | Client selects only a ranked qualified ID; terminal 95/5 payout                               | Compare → Select winner → Receipt           | Real receipt pending                       |
-| No-winner settlement   | Ranked 15/10/5 rewards; client keeps 70/75/85% by finalist count                              | Permissionless expiry control → Receipt     | Real receipt pending                       |
-| No-qualified refund    | Full prize returned when zero submissions qualify                                             | Contract test and UI rule preview           | Real receipt pending                       |
-| Permissionless expiry  | Any account may settle after deadline; qualification order is fallback if ranking stalls      | Second contest                              | Existing qualifications only               |
-| Conservation           | Integer atomic math; unbounded qualification with a bounded payout set                        | Receipt arithmetic; Foundry fuzz tests      | Not formally verified                      |
-| Reentrancy/integrity   | CEI, reentrancy guard, safe transfer, immutable token                                         | Reentrant/fee token tests                   | Unaudited                                  |
-| ERC-8183 alignment     | Create/fund/submit/evaluate/complete and content-hash semantics                               | Architecture explanation                    | Not claimed compliant                      |
-| Builder autonomy       | Three-stage decision; the purchased analysis recalibrates the prior and can force a walk-away | Agent Activity before/after metrics         | Explicitly triggered, not watcher          |
-| Agent wallet           | Server-only low-balance signer and chain check                                                | Real proof receipt when configured          | External EOA required                      |
-| x402                   | Circle Gateway buyer/seller adapters and paid analysis endpoint                               | Real settled payment ID only when produced  | Circle funding/config pending              |
-| Spending safety        | Request/session/day caps, origin allowlist, pause, operator token, lock/rate limit            | Agent tests and UI                          | Process-local controls                     |
-| Verification           | Required content/interaction/a11y/static-mobile/script/duplicate hard gates                   | Submission detail and comparison            | No arbitrary repo execution                |
-| Artifact proof         | Keccak hash, content-addressed bytes, sandboxed public URI                                    | Hash and proof receipt                      | Durable object store is stretch            |
-| Direct chain authority | Agent/UI read contract state and receipts directly                                            | Real contest input says “Verified from Arc” | No custom indexer/database by design       |
-| Real/fixture truth     | Structural evidence modes and no fake receipts                                                | Badges throughout product                   | Presenter must preserve labels             |
-| Winner/no-winner E2E   | Desktop and mobile Playwright journeys                                                        | `pnpm test:e2e` — 14 / 14 passed            | Browser binaries must be installed locally |
-| Public verification    | Judge Proof room and machine-readable Arc health endpoint                                     | `/proof` and `/api/health`                  | Hosting deployment approval pending        |
-| Deployment command     | Vercel monorepo link/deploy command documented                                                | `pnpm web:deploy`                           | Interactive hosting login pending          |
+## Public judge entry points
 
-## Local evidence
+- App: <https://draft-pay-web.vercel.app>
+- Judge Proof Room: <https://draft-pay-web.vercel.app/proof>
+- Live Arc health proof: <https://draft-pay-web.vercel.app/api/health>
+- x402 seller health: <https://draft-pay-x402-service.vercel.app/health>
+- Complete machine-readable execution: <https://draft-pay-web.vercel.app/evidence/final-run.json>
+- Real generated artifact: <https://draft-pay-web.vercel.app/evidence/artifacts/1245abd45b6136b7fb8b201fbbef4a542d116eaf6e63eb01a28dc5a167a9aa33.html>
+- Repository: <https://github.com/openai-lover/DraftPay>
 
-Run these commands for the current counts rather than relying on stale submission prose:
+The evidence JSON is the canonical index for every submission, evaluation, payout, address, content hash, payment receipt, and ArcScan URL.
+
+## Requirement coverage
+
+| Requirement           | Implementation                                                                                          | Public proof                                                                               | Honest boundary                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| Arc Testnet           | Chain `5042002` assertion; isolated contest contracts; direct state and receipt reads                   | Factory plus winner/no-winner contests and ArcScan transactions                            | Testnet-only, unaudited                                 |
+| USDC escrow           | Exact five-USDC funding pull per contest                                                                | Funding and terminal payout receipts                                                       | No mainnet or custody claim                             |
+| Agent decision        | Three-stage pre-quote, post-quote, and post-analysis economics                                          | Stored `participate` decision and measurable inputs                                        | Explicitly triggered, not a continuous watcher          |
+| Agent wallet          | Dedicated low-balance EOA signs x402 and Arc proof writes                                               | Payer and builder addresses in public evidence                                             | Circle Gateway buyer path currently uses an EOA         |
+| x402                  | Public Circle Gateway seller; origin and spend policy; real 0.01-USDC settlement                        | Receipt ID `8f97cd76-cfd1-404a-8bec-5c036e8ae6f2`; seller returns HTTP 402 without payment | Gateway receipt ID rather than a fabricated tx hash     |
+| Artifact generation   | DraftPay deterministic builder consumes the paid brief analysis                                         | Real-mode artifact metadata and public HTML bytes                                          | Deterministic builder, not claimed to be an LLM         |
+| Verification          | Static hard gates plus real Chromium render, CTA, form, mobile overflow, and persistent hash uniqueness | 12/12 checks stored with artifact                                                          | Static HTML category only                               |
+| Proof submission      | Keccak content hash and retrievable URI written by builder                                              | Six successful Arc submission transactions                                                 | Two prepared secondary finalists remain labeled fixture |
+| Evaluation            | Evaluator-only qualification and ranking with evidence hashes                                           | Three qualification writes and one ranking write per contest                               | Central evaluator; no quorum/disputes                   |
+| Winner settlement     | Client may select only a ranked finalist; 95% plus 5% finalist pool                                     | Successful winner ArcScan receipt and `4.75 + 0.125 + 0.125 = 5.00`                        | Client choice remains subjective                        |
+| No-winner settlement  | Ranked effort receives 15/10/5; 70% returns to client                                                   | Successful ArcScan receipt and `0.75 + 0.50 + 0.25 + 3.50 = 5.00`                          | No dispute process                                      |
+| Zero-qualified refund | Full prize returns when nobody qualifies                                                                | Earlier successful five-USDC refund transaction                                            | Separate real terminal branch                           |
+| Conservation          | Atomic integer math; bounded three-recipient payout set                                                 | Onchain payout arrays plus Foundry fuzz tests                                              | Not formally verified                                   |
+| Public deployment     | Next.js app and Node x402 service deployed separately                                                   | Both URLs load without authentication                                                      | Hobby/Testnet deployment                                |
+| Public verification   | Live Arc RPC, USDC, and Circle Gateway checks plus a claim-to-code guide                                | Proof Room, JSON health endpoint, CI, and ArcScan evidence                                 | Read-only health does not replace transaction receipts  |
+
+## Exact live run
+
+- Factory: `0x15933a0368787066dF3cF2f0155Eb978dc143828`
+- Winner contest: `0xA5aD6018afd517429C64469cC2dFFE09c5f1853a`
+- Finalist no-winner contest: `0xeF753F526B4fbB39b4913eAfc7dE5C85471F7e49`
+- Agent/builder: `0xF601Fbf9F28CC12794044DBE481A692957Dde832`
+- Evaluator: `0xaA21cB00255494188298998885f98E411d911370`
+- Real artifact hash: `0x1245abd45b6136b7fb8b201fbbef4a542d116eaf6e63eb01a28dc5a167a9aa33`
+- Winner-path submission: <https://testnet.arcscan.app/tx/0x09ade04f8ba31208b52b4cd7ec9c64e237bdc402988e94ad9e88c1f44cdbac42>
+- No-winner-path submission: <https://testnet.arcscan.app/tx/0x8f3bd833f0573ff261511f5e0feaf6846a328d4833e57da8fe483ee5610a0826>
+- Winner settlement: <https://testnet.arcscan.app/tx/0x1ecbdd4ebe4819e187f6928ac7474d8c03406bc2840a8175c1293346bf2d6906>
+- Finalist-bearing no-winner settlement: <https://testnet.arcscan.app/tx/0x5a00874bacb95b830d43738c67cd5722707d3f152c6d39b9a71e32c5d34c68a5>
+- Earlier zero-qualified refund: <https://testnet.arcscan.app/tx/0xc2526124286edfb50400cd1f969fec007388efc9969ad90c507319c94e60f2a7>
+
+## Local verification snapshot
+
+- Foundry: 28 passing contract tests, including winner/no-winner conservation fuzz runs and finalist-cap boundaries.
+- TypeScript unit/integration: 79 passing tests across shared, agent, web, and x402 service packages.
+- Playwright: 24 passing desktop/mobile journeys, including the final live-proof timeline, wallet chooser, and Proof Room.
+- Strict TypeScript, ESLint, Prettier, Solidity formatting, contract build, and Next.js production build pass in the final repository state.
+
+Run the current suite rather than trusting prose:
 
 ```bash
 pnpm contracts:test
@@ -39,35 +65,10 @@ pnpm test:unit
 pnpm test:integration
 pnpm lint
 pnpm typecheck
+pnpm test:e2e
 pnpm build
-pnpm --filter @draftpay/web exec playwright test --list
 ```
-
-The deterministic `pnpm demo:run` path must report participate, no fixture payment, the exact artifact hash, and qualified. Browser execution is not counted as passing until Playwright runs in an environment allowed to launch Chromium.
-
-Current local result snapshot:
-
-- Foundry: 28 passed, including 256 winner and 256 no-winner conservation fuzz runs and the finalist-cap boundary cases.
-- Unit: shared 13, agent 31, web 7; all passed.
-- x402 integration/config: 5 passed after allowing its loopback test listener.
-- Strict TypeScript: all seven TypeScript workspaces passed.
-- ESLint, Prettier, Solidity format, contract size build, and Next.js production build passed.
-- Playwright: 14 desktop/mobile cases passed, covering wallet, Proof room, create, winner, no-winner, and overflow paths.
-- Fixture demo: participate, `paymentOccurred: false`, exact seeded hash, qualified, no onchain submission.
-- Fixture demo before/after the purchased analysis: 72.00% → 64.50% qualification prior, 0.080 → 0.110 USDC build-cost estimate, 68.26 → 61.105 USDC expected value, with each adjustment itemised in basis points.
-
-## Pending real evidence
-
-| Evidence                                 | Value                        |
-| ---------------------------------------- | ---------------------------- |
-| Factory address and deployment tx        | Pending funded Arc deployer  |
-| Winner contest funding/settlement txs    | Pending                      |
-| No-winner contest funding/settlement txs | Pending                      |
-| Builder proof submission tx              | Pending agent EOA            |
-| Evaluator/ranking txs                    | Pending evaluator EOA        |
-| Real x402 payment ID                     | Pending Circle configuration |
-| Public web URL                           | Pending Vercel login/link    |
 
 ## Explicit stretch status
 
-Submission bonds, ERC-8004 identity, continuous contest discovery, custom indexing/database infrastructure, disputes, and production artifact infrastructure are deferred and are not judge evidence.
+Submission bonds, ERC-8004 identity, continuous contest discovery, custom chain indexing, evaluator quorum, disputes, arbitrary repository execution, and production authentication remain out of scope. None are presented as judge evidence.

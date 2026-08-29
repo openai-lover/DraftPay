@@ -3,9 +3,10 @@
 import { ARC_TESTNET_CHAIN_ID, draftPayContestAbi } from "@draftpay/chain";
 import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { isAddress, type Address } from "viem";
 import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteContract } from "wagmi";
+import { isSelectionDeadlinePassed } from "@/lib/contest-status";
 
 export function NoWinnerControl() {
   const configured = process.env.NEXT_PUBLIC_DEMO_CONTEST_ADDRESS;
@@ -17,6 +18,14 @@ export function NoWinnerControl() {
   const router = useRouter();
   const [status, setStatus] = useState<"idle" | "pending" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [nowSeconds, setNowSeconds] = useState(0);
+
+  useEffect(() => {
+    const updateClock = () => setNowSeconds(Math.floor(Date.now() / 1_000));
+    updateClock();
+    const timer = window.setInterval(updateClock, 1_000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const live = useReadContracts({
     contracts: contestAddress
@@ -32,8 +41,7 @@ export function NoWinnerControl() {
   const client = live.data?.[0]?.result;
   const selectionDeadline = BigInt(live.data?.[1]?.result ?? 0n);
   const contractState = Number(live.data?.[2]?.result ?? -1);
-  const deadlineExpired =
-    selectionDeadline > 0n && BigInt(Math.floor(Date.now() / 1_000)) > selectionDeadline;
+  const deadlineExpired = isSelectionDeadlinePassed(nowSeconds, selectionDeadline);
   const connectedClient =
     account.address && client && account.address.toLowerCase() === client.toLowerCase();
   const stateCanSettle = deadlineExpired
@@ -74,6 +82,8 @@ export function NoWinnerControl() {
     }
   }
 
+  if (!contestAddress) return null;
+
   return (
     <div style={{ marginTop: 16 }}>
       <button
@@ -85,18 +95,16 @@ export function NoWinnerControl() {
         {status === "pending" && <LoaderCircle size={15} className="animate-spin" />}
         {deadlineExpired ? "Execute permissionless no-winner settlement" : "Reject all finalists"}
       </button>
-      {!contestAddress && (
-        <p className="form-help">
-          Configure a real contest to enable this transaction. The fixture payout preview remains
-          read-only.
-        </p>
-      )}
-      {contestAddress && !stateCanSettle && (
+      {!stateCanSettle && (
         <p className="form-help">
           Before expiry, only the client can reject ranked finalists. After expiry, any wallet can
           settle.
         </p>
       )}
+      <p className="form-help">
+        This action targets the configured reference deployment, not the fixture contest shown
+        above.
+      </p>
       {error && (
         <p className="notice notice--error" role="alert">
           {error}

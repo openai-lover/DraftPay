@@ -1,71 +1,69 @@
-# Three-Minute Submission Video Script
+# Three-Minute Submission Video
 
-## Shot 1 — 0:00–0:12
+The automated recording uses the deployed app, the generated artifact, and live ArcScan pages. It never displays a private key, wallet prompt, or seeded receipt.
 
-Visual: landing hero, then the five-step workflow.
+## 0:00-0:16 — The product
 
-Voiceover: “Post a brief. Agents build. Programmable money pays fairly. DraftPay is an Arc-native contest for working digital products.”
+Visual: public landing hero.
 
-Overlay: `Arc Testnet · USDC escrow · autonomous agent`.
+Voiceover: “DraftPay is an outcome-based build contest on Arc. A client posts a funded brief, humans and autonomous agents ship working products, and one contract pays every terminal outcome in USDC.”
 
-## Shot 2 — 0:12–0:38
+## 0:16-0:34 — The proof chain
 
-Visual: create form → structured requirements → client approval → successful create/approve/fund receipts.
+Visual: public verifiable-execution timeline.
 
-Voiceover: “A client turns a natural-language brief into an approved testable specification and escrows exactly 100 USDC. Arc—not our server—holds and releases the prize.”
+Voiceover: “The demo is one linked execution: the agent reads the contest, decides whether entering is profitable, buys one useful analysis through x402, generates and verifies an artifact, submits its hash, and receives an onchain outcome.”
 
-Overlay: factory and contest addresses plus real ArcScan transaction, if deployed.
+## 0:34-0:56 — The artifact
 
-## Shot 3 — 0:38–1:04
+Visual: the real content-addressed Ledgerly artifact.
 
-Visual: Agent Activity inputs and participate decision.
+Voiceover: “This page is not the prepared fixture. DraftPay's deterministic builder generated it after the paid analysis. Headline, sections, CTA, form, accessibility, script safety, uniqueness, and a real 390-pixel Chromium render all passed before submission.”
 
-Voiceover: “Northstar evaluates category, deadline, costs, the 1 USDC bond, qualification probability, expected value, required tools, and wallet limits. It enters only when every rule passes.”
+## 0:56-1:16 — The submission
 
-Overlay: `EV = 67.27 USDC · Participate` for the deterministic fixture, clearly labeled.
+Visual: ArcScan proof-submission transaction.
 
-## Shot 4 — 1:04–1:26
+Voiceover: “The builder wallet binds the Keccak content hash and a retrievable public URI to the Arc contest. The app server cannot replace the artifact or redirect the prize.”
 
-Visual: real x402 paid call evidence, then artifact hash and Arc submission.
+## 1:16-1:35 — Evaluation
 
-Voiceover: “The agent buys brief-risk analysis through Circle Gateway x402, under a strict allowlist and spend policy. It builds a responsive static product, verifies hard requirements, hashes the content, and commits proof on Arc.”
+Visual: ArcScan finalist-ranking transaction.
 
-Overlay: payment receipt ID and submission transaction only when real.
+Voiceover: “After the deadline, the evaluator records three qualified submissions and their ranking. It can enforce the public hard checks, but it cannot select the winner or move escrow anywhere else.”
 
-## Shot 5 — 1:26–1:58
+## 1:35-2:00 — Winner branch
 
-Visual: three large submission previews; switch twice; linger on checks and hashes.
+Visual: winner settlement on ArcScan.
 
-Voiceover: “The evaluator can qualify and rank at most three finalists, but cannot choose the winner or redirect funds. The client compares products—not résumés.”
+Voiceover: “In the winner branch, the client selects qualified submission one. The contract immediately pays 4.75 USDC to the winner and 0.125 to each other finalist. Five USDC enters and exactly five leaves.”
 
-## Shot 6 — 1:58–2:22
+## 2:00-2:25 — No-winner branch
 
-Visual: winner confirmation → verified receipt.
+Visual: finalist-bearing no-winner settlement on ArcScan.
 
-Voiceover: “When the client selects a winner, the contract immediately pays 95 percent to the winner and shares 5 percent among the other qualified finalists.”
+Voiceover: “In the second contest, the client selects nobody. That does not erase verified effort: ranks one, two, and three receive fifteen, ten, and five percent, while seventy percent returns to the client.”
 
-Overlay: `95.00 + 2.50 + 2.50 = 100.00 USDC`.
+## 2:25-2:55 — Public evidence
 
-## Shot 7 — 2:22–2:47
+Visual: public evidence JSON, then final landing frame.
 
-Visual: expired second contest → any wallet settles → receipt.
+Voiceover: “Every address, artifact, payment receipt, submission, evaluation, and payout is public and linked from one judge packet. DraftPay makes agent decisions legible and programmable-money outcomes enforceable. Post a brief. Agents build. Arc pays fairly.”
 
-Voiceover: “If nobody is selected, any account can execute expiry settlement: 70 percent returns to the client and ranked effort receives 15, 10, and 5 percent. No qualified work means a full refund.”
+## Recording command
 
-Overlay: `70 + 15 + 10 + 5 = 100 USDC`.
+After the final production deployment:
 
-## Shot 8 — 2:47–3:00
+```bash
+node node_modules/tsx/dist/cli.mjs scripts/record-demo-video.ts
+```
 
-Visual: contract events, Circle evidence, agent identity page, final hero.
+The command writes `outputs/DraftPay-3min-demo.webm`. The eight live shots target about 160 seconds; navigation time brings the finished recording close to three minutes.
 
-Voiceover: “DraftPay makes agent decisions legible and outcomes enforceable. Post a brief. Agents build. Arc pays fairly.”
+## Final checks
 
-End card: repository URL, public app URL, factory address, and two settlement ArcScan links—only after they exist.
-
-## Recording checklist
-
-- Record at 1440p or higher with browser zoom at 100%.
-- Pre-connect only dedicated Testnet wallets; never show keys or seed phrases.
-- Hide unrelated browser tabs and notifications.
-- Keep fixture badges visible where evidence is seeded.
-- Do not edit transaction hashes into the video; capture live UI receipts and ArcScan.
+- Confirm the public production app and artifact load without authentication.
+- Confirm both settlement pages show successful Arc transactions.
+- Keep fixture labels visible for the two prepared secondary finalists.
+- Never show `.env.local`, wallet secrets, Vercel settings, or unrelated tabs.
+- Upload the resulting WebM as an unlisted/public video and verify it in a signed-out window.

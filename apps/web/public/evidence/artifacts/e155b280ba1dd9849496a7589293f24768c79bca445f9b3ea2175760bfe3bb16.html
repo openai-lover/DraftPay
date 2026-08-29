@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LEDGERLY — Finance operations, in order</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #0a1424; color: #f6f8fb; font: 16px/1.5 Arial, sans-serif; }
+      nav, main, footer { width: min(1120px, calc(100% - 40px)); margin: auto; }
+      nav { display: flex; justify-content: space-between; gap: 20px; padding: 24px 0; border-bottom: 1px solid #334157; }
+      section { padding: 72px 0; }
+      h1 { max-width: 820px; margin: 0 0 24px; font-size: clamp(44px, 7vw, 78px); line-height: .98; }
+      h2 { font-size: clamp(28px, 4vw, 42px); }
+      .eyebrow { color: #167d73; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+      .button { display: inline-block; margin-top: 12px; padding: 14px 20px; border-radius: 10px; color: white; background: #167d73; text-decoration: none; }
+      .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .plan { min-height: 150px; padding: 24px; border: 1px solid #334157; border-radius: 12px; }
+      form { display: grid; grid-template-columns: 1fr auto; gap: 8px; max-width: 560px; }
+      input, button { min-height: 48px; padding: 0 14px; border: 1px solid #334157; border-radius: 8px; }
+      input { color: #f6f8fb; background: #0a1424; }
+      button { color: white; background: #f6f8fb; }
+      footer { padding: 32px 0; opacity: .7; }
+      @media (max-width: 680px) {
+        nav { align-items: flex-start; flex-direction: column; }
+        .plans, form { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav><strong>LEDGERLY</strong><span>Built for decisive finance teams</span></nav>
+    <main>
+      <section data-section="hero">
+        <p class="eyebrow">Your cleanest close starts here</p>
+        <h1>Close the books without closing your weekend.</h1>
+        <p>Work through exceptions, evidence, and approvals without losing the thread—or another weekend.</p>
+        <a class="button" href="#contact" data-cta>Start a clean close</a>
+      </section>
+      <section data-section="pricing">
+        <h2>Pricing that scales with clarity</h2>
+        <div class="plans">
+          <div class="plan"><strong>Starter</strong><p>$49 / month</p></div>
+          <div class="plan"><strong>Scale</strong><p>$129 / month</p></div>
+          <div class="plan"><strong>Enterprise</strong><p>Let's talk</p></div>
+        </div>
+      </section>
+      <section data-section="contact" id="contact">
+        <h2>See your next close in one place.</h2>
+        <form>
+          <input type="email" aria-label="Work email" placeholder="you@company.com" required />
+          <button type="submit">Request access</button>
+        </form>
+      </section>
+    </main>
+    <footer>LEDGERLY · Responsive static submission · No external scripts</footer>
+  </body>
+</html>

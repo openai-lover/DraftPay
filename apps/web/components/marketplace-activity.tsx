@@ -11,7 +11,7 @@ interface MarketplaceActivityProps {
 export function MarketplaceActivity({
   items,
   compact = false,
-  label = "Demo marketplace activity",
+  label = "Marketplace activity",
 }: MarketplaceActivityProps) {
   return (
     <div className={`market-activity${compact ? " market-activity--compact" : ""}`}>

@@ -21,4 +21,4 @@ The application includes all eight judge-facing screens, a three-way product com
 
 ## Evidence status
 
-Local implementation gates and exact current verification results are recorded in `JUDGING_MAP.md`. Real Arc deployment, settlement transactions, Circle payment ID, and hosted URL remain pending the external funded wallets/accounts documented in `KNOWN_LIMITATIONS.md`.
+Local implementation gates and exact current verification results are recorded in `JUDGING_MAP.md`. The factory, two funded contests, Gateway deposit, x402 payment, and zero-submission refund are real evidence; artifact submission, evaluator/winner/finalist-settlement transactions, and hosted URLs remain pending as documented in `KNOWN_LIMITATIONS.md`.

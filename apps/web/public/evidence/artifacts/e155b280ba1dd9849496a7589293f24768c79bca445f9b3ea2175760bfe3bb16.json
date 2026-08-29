@@ -1,0 +1,98 @@
+{
+  "contentHash": "0xe155b280ba1dd9849496a7589293f24768c79bca445f9b3ea2175760bfe3bb16",
+  "mode": "fixture",
+  "providerLabel": "Prepared finalist 3",
+  "byteLength": 2985,
+  "checks": [
+    {
+      "id": "loads",
+      "label": "Preview loads",
+      "passed": true,
+      "detail": "Rendered in headless Chromium at 390×844",
+      "hardFailure": true
+    },
+    {
+      "id": "headline",
+      "label": "Required headline",
+      "passed": true,
+      "detail": "Close the books without closing your weekend.",
+      "hardFailure": true
+    },
+    {
+      "id": "sections",
+      "label": "Required sections",
+      "passed": true,
+      "detail": "Hero, pricing, and contact markers",
+      "hardFailure": true
+    },
+    {
+      "id": "cta",
+      "label": "CTA exists",
+      "passed": true,
+      "detail": "Primary action uses the data-cta marker",
+      "hardFailure": true
+    },
+    {
+      "id": "form",
+      "label": "Contact form exists",
+      "passed": true,
+      "detail": "Form and email input present",
+      "hardFailure": true
+    },
+    {
+      "id": "accessibility",
+      "label": "Accessibility baseline",
+      "passed": true,
+      "detail": "Document language, labeled form control, and native action scan",
+      "hardFailure": true
+    },
+    {
+      "id": "mobile",
+      "label": "Static mobile safety",
+      "passed": true,
+      "detail": "Static CSS guard passed: mobile viewport, responsive breakpoint, and no >390px minimum width",
+      "hardFailure": true
+    },
+    {
+      "id": "runtime-mobile",
+      "label": "390px viewport has no overflow",
+      "passed": true,
+      "detail": "Rendered in headless Chromium at 390×844",
+      "hardFailure": true
+    },
+    {
+      "id": "runtime-cta",
+      "label": "CTA is visibly rendered",
+      "passed": true,
+      "detail": "Rendered in headless Chromium at 390×844",
+      "hardFailure": true
+    },
+    {
+      "id": "runtime-form",
+      "label": "Contact form is visibly usable",
+      "passed": true,
+      "detail": "Rendered in headless Chromium at 390×844",
+      "hardFailure": true
+    },
+    {
+      "id": "scripts",
+      "label": "No prohibited scripts",
+      "passed": true,
+      "detail": "Script, javascript URL, and inline-handler scan",
+      "hardFailure": true
+    },
+    {
+      "id": "duplicate",
+      "label": "Unique content hash",
+      "passed": true,
+      "detail": "0xe155b280ba1dd9849496a7589293f24768c79bca445f9b3ea2175760bfe3bb16",
+      "hardFailure": true
+    }
+  ],
+  "estimatedCostAtomic": "0",
+  "toolPaymentReceiptId": null,
+  "screenshot": {
+    "status": "not-captured",
+    "path": null
+  }
+}

@@ -54,7 +54,7 @@ export default async function ContestDetailPage({ params }: ContestDetailPagePro
   const primaryLabel = isFlagship
     ? "Compare submissions"
     : isSettled
-      ? "View demo settlement"
+      ? "View settlement preview"
       : "Inspect marketplace activity";
 
   return (
@@ -114,7 +114,7 @@ export default async function ContestDetailPage({ params }: ContestDetailPagePro
             <DataRow label="Selection deadline">
               {displayDate(demoContest.selectionDeadline)}
             </DataRow>
-            <DataRow label="Contract">Not deployed in fixture mode</DataRow>
+            <DataRow label="Contract">Fixture only · no deployed contract</DataRow>
             <div className="side-panel__actions">
               <Link className="button button--wide" href={primaryHref}>
                 {primaryLabel} <ArrowRight size={16} />
@@ -131,8 +131,8 @@ export default async function ContestDetailPage({ params }: ContestDetailPagePro
             </>
           ) : (
             <div className="notice notice--amber" style={{ marginTop: 18 }}>
-              Demo-only scenario. No wallet payment, deployed contract, or onchain receipt exists
-              for this seeded contest.
+              Fixture scenario. No wallet payment, deployed contract, or onchain receipt exists for
+              this seeded contest.
             </div>
           )}
         </aside>

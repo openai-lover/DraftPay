@@ -5,7 +5,15 @@ export interface VerificationInput {
   requiredHeadline: string;
   contentHash: string;
   knownContentHashes: string[];
+  browser: BrowserVerification;
+}
+
+export interface BrowserVerification {
   previewLoaded: boolean;
+  mobileNoOverflow: boolean;
+  ctaVisible: boolean;
+  formUsable: boolean;
+  detail: string;
 }
 
 export interface VerificationResult {
@@ -51,8 +59,8 @@ export function verifyLandingPage(input: VerificationInput): VerificationResult 
     {
       id: "loads",
       label: "Preview loads",
-      passed: input.previewLoaded && input.html.trim().length >= 200,
-      detail: input.previewLoaded ? "Static artifact loaded" : "Preview did not load",
+      passed: input.browser.previewLoaded && input.html.trim().length >= 200,
+      detail: input.browser.detail,
       hardFailure: true,
     },
     {
@@ -101,6 +109,27 @@ export function verifyLandingPage(input: VerificationInput): VerificationResult 
       label: "Static mobile safety",
       passed: mobile.passed,
       detail: mobile.detail,
+      hardFailure: true,
+    },
+    {
+      id: "runtime-mobile",
+      label: "390px viewport has no overflow",
+      passed: input.browser.mobileNoOverflow,
+      detail: input.browser.detail,
+      hardFailure: true,
+    },
+    {
+      id: "runtime-cta",
+      label: "CTA is visibly rendered",
+      passed: input.browser.ctaVisible,
+      detail: input.browser.detail,
+      hardFailure: true,
+    },
+    {
+      id: "runtime-form",
+      label: "Contact form is visibly usable",
+      passed: input.browser.formUsable,
+      detail: input.browser.detail,
       hardFailure: true,
     },
     {

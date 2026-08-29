@@ -1,0 +1,615 @@
+{
+  "schemaVersion": 1,
+  "network": "Arc Testnet",
+  "chainId": 5042002,
+  "factory": "0x15933a0368787066dF3cF2f0155Eb978dc143828",
+  "recordedAt": "2026-08-02T07:55:07.407Z",
+  "settledAt": "2026-08-02T08:07:54.226Z",
+  "publicX402Url": "https://draft-pay-x402-service.vercel.app/x402/brief-analysis",
+  "contests": {
+    "winner": {
+      "address": "0xA5aD6018afd517429C64469cC2dFFE09c5f1853a",
+      "funding": "https://testnet.arcscan.app/tx/0x93737681dca0d820f9cc23ec67b0dcc82c07ac8c245982f7a0b75da60a396756"
+    },
+    "noWinner": {
+      "address": "0xeF753F526B4fbB39b4913eAfc7dE5C85471F7e49",
+      "funding": "https://testnet.arcscan.app/tx/0x07cfe8be121d9e70616b38ef8f4eb516e624eb47eb9524a711782c2d136b602c"
+    }
+  },
+  "agent": {
+    "address": "0xF601Fbf9F28CC12794044DBE481A692957Dde832",
+    "decision": "participate",
+    "decisionReasons": [
+      "Supported task, sufficient time, budget, tools, and expected value"
+    ],
+    "providerLabel": "DraftPay deterministic builder v1",
+    "x402Payment": {
+      "mode": "real",
+      "paymentOccurred": true,
+      "quotedAmountAtomic": "10000",
+      "amountAtomic": "10000",
+      "network": "eip155:5042002",
+      "payer": "0xF601Fbf9F28CC12794044DBE481A692957Dde832",
+      "receiptId": "8f97cd76-cfd1-404a-8bec-5c036e8ae6f2",
+      "serviceUrl": "https://draft-pay-x402-service.vercel.app/x402/brief-analysis",
+      "status": "settled"
+    }
+  },
+  "artifacts": [
+    {
+      "submissionId": "1",
+      "contentHash": "0x1245abd45b6136b7fb8b201fbbef4a542d116eaf6e63eb01a28dc5a167a9aa33",
+      "publicUrl": "https://draft-pay-web.vercel.app/evidence/artifacts/1245abd45b6136b7fb8b201fbbef4a542d116eaf6e63eb01a28dc5a167a9aa33.html",
+      "builder": "0xF601Fbf9F28CC12794044DBE481A692957Dde832",
+      "mode": "real",
+      "providerLabel": "DraftPay deterministic builder v1",
+      "score": 100,
+      "qualified": true,
+      "hardChecks": [
+        {
+          "id": "loads",
+          "label": "Preview loads",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "headline",
+          "label": "Required headline",
+          "passed": true,
+          "detail": "Close the books without closing your weekend.",
+          "hardFailure": true
+        },
+        {
+          "id": "sections",
+          "label": "Required sections",
+          "passed": true,
+          "detail": "Hero, pricing, and contact markers",
+          "hardFailure": true
+        },
+        {
+          "id": "cta",
+          "label": "CTA exists",
+          "passed": true,
+          "detail": "Primary action uses the data-cta marker",
+          "hardFailure": true
+        },
+        {
+          "id": "form",
+          "label": "Contact form exists",
+          "passed": true,
+          "detail": "Form and email input present",
+          "hardFailure": true
+        },
+        {
+          "id": "accessibility",
+          "label": "Accessibility baseline",
+          "passed": true,
+          "detail": "Document language, labeled form control, and native action scan",
+          "hardFailure": true
+        },
+        {
+          "id": "mobile",
+          "label": "Static mobile safety",
+          "passed": true,
+          "detail": "Static CSS guard passed: mobile viewport, responsive breakpoint, and no >390px minimum width",
+          "hardFailure": true
+        },
+        {
+          "id": "runtime-mobile",
+          "label": "390px viewport has no overflow",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "runtime-cta",
+          "label": "CTA is visibly rendered",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "runtime-form",
+          "label": "Contact form is visibly usable",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "scripts",
+          "label": "No prohibited scripts",
+          "passed": true,
+          "detail": "Script, javascript URL, and inline-handler scan",
+          "hardFailure": true
+        },
+        {
+          "id": "duplicate",
+          "label": "Unique content hash",
+          "passed": true,
+          "detail": "0x1245abd45b6136b7fb8b201fbbef4a542d116eaf6e63eb01a28dc5a167a9aa33",
+          "hardFailure": true
+        }
+      ]
+    },
+    {
+      "submissionId": "2",
+      "contentHash": "0xa80f59780e8de656d324ff62828559748fbb4d996a8776660e5293c890b38158",
+      "publicUrl": "https://draft-pay-web.vercel.app/evidence/artifacts/a80f59780e8de656d324ff62828559748fbb4d996a8776660e5293c890b38158.html",
+      "builder": "0x621c9f5b7427E746F497C6688B30A274e0045CCC",
+      "mode": "fixture",
+      "providerLabel": "Prepared finalist 2",
+      "score": 100,
+      "qualified": true,
+      "hardChecks": [
+        {
+          "id": "loads",
+          "label": "Preview loads",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "headline",
+          "label": "Required headline",
+          "passed": true,
+          "detail": "Close the books without closing your weekend.",
+          "hardFailure": true
+        },
+        {
+          "id": "sections",
+          "label": "Required sections",
+          "passed": true,
+          "detail": "Hero, pricing, and contact markers",
+          "hardFailure": true
+        },
+        {
+          "id": "cta",
+          "label": "CTA exists",
+          "passed": true,
+          "detail": "Primary action uses the data-cta marker",
+          "hardFailure": true
+        },
+        {
+          "id": "form",
+          "label": "Contact form exists",
+          "passed": true,
+          "detail": "Form and email input present",
+          "hardFailure": true
+        },
+        {
+          "id": "accessibility",
+          "label": "Accessibility baseline",
+          "passed": true,
+          "detail": "Document language, labeled form control, and native action scan",
+          "hardFailure": true
+        },
+        {
+          "id": "mobile",
+          "label": "Static mobile safety",
+          "passed": true,
+          "detail": "Static CSS guard passed: mobile viewport, responsive breakpoint, and no >390px minimum width",
+          "hardFailure": true
+        },
+        {
+          "id": "runtime-mobile",
+          "label": "390px viewport has no overflow",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "runtime-cta",
+          "label": "CTA is visibly rendered",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "runtime-form",
+          "label": "Contact form is visibly usable",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "scripts",
+          "label": "No prohibited scripts",
+          "passed": true,
+          "detail": "Script, javascript URL, and inline-handler scan",
+          "hardFailure": true
+        },
+        {
+          "id": "duplicate",
+          "label": "Unique content hash",
+          "passed": true,
+          "detail": "0xa80f59780e8de656d324ff62828559748fbb4d996a8776660e5293c890b38158",
+          "hardFailure": true
+        }
+      ]
+    },
+    {
+      "submissionId": "3",
+      "contentHash": "0xe155b280ba1dd9849496a7589293f24768c79bca445f9b3ea2175760bfe3bb16",
+      "publicUrl": "https://draft-pay-web.vercel.app/evidence/artifacts/e155b280ba1dd9849496a7589293f24768c79bca445f9b3ea2175760bfe3bb16.html",
+      "builder": "0x0797F6D3D86FFC5Df39815086B367ecbDB35F87C",
+      "mode": "fixture",
+      "providerLabel": "Prepared finalist 3",
+      "score": 100,
+      "qualified": true,
+      "hardChecks": [
+        {
+          "id": "loads",
+          "label": "Preview loads",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "headline",
+          "label": "Required headline",
+          "passed": true,
+          "detail": "Close the books without closing your weekend.",
+          "hardFailure": true
+        },
+        {
+          "id": "sections",
+          "label": "Required sections",
+          "passed": true,
+          "detail": "Hero, pricing, and contact markers",
+          "hardFailure": true
+        },
+        {
+          "id": "cta",
+          "label": "CTA exists",
+          "passed": true,
+          "detail": "Primary action uses the data-cta marker",
+          "hardFailure": true
+        },
+        {
+          "id": "form",
+          "label": "Contact form exists",
+          "passed": true,
+          "detail": "Form and email input present",
+          "hardFailure": true
+        },
+        {
+          "id": "accessibility",
+          "label": "Accessibility baseline",
+          "passed": true,
+          "detail": "Document language, labeled form control, and native action scan",
+          "hardFailure": true
+        },
+        {
+          "id": "mobile",
+          "label": "Static mobile safety",
+          "passed": true,
+          "detail": "Static CSS guard passed: mobile viewport, responsive breakpoint, and no >390px minimum width",
+          "hardFailure": true
+        },
+        {
+          "id": "runtime-mobile",
+          "label": "390px viewport has no overflow",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "runtime-cta",
+          "label": "CTA is visibly rendered",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "runtime-form",
+          "label": "Contact form is visibly usable",
+          "passed": true,
+          "detail": "Rendered in headless Chromium at 390×844",
+          "hardFailure": true
+        },
+        {
+          "id": "scripts",
+          "label": "No prohibited scripts",
+          "passed": true,
+          "detail": "Script, javascript URL, and inline-handler scan",
+          "hardFailure": true
+        },
+        {
+          "id": "duplicate",
+          "label": "Unique content hash",
+          "passed": true,
+          "detail": "0xe155b280ba1dd9849496a7589293f24768c79bca445f9b3ea2175760bfe3bb16",
+          "hardFailure": true
+        }
+      ]
+    }
+  ],
+  "submissions": {
+    "winner": [
+      {
+        "chainId": 5042002,
+        "hash": "0x09ade04f8ba31208b52b4cd7ec9c64e237bdc402988e94ad9e88c1f44cdbac42",
+        "blockNumber": "54900972",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0x09ade04f8ba31208b52b4cd7ec9c64e237bdc402988e94ad9e88c1f44cdbac42",
+        "contentHash": "0x1245abd45b6136b7fb8b201fbbef4a542d116eaf6e63eb01a28dc5a167a9aa33",
+        "builder": "0xF601Fbf9F28CC12794044DBE481A692957Dde832"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0xf125a206a97f2a5f623cc257c42bd8689739c047c0b1503fc9af780a5928bd22",
+        "blockNumber": "54900987",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0xf125a206a97f2a5f623cc257c42bd8689739c047c0b1503fc9af780a5928bd22",
+        "contentHash": "0xa80f59780e8de656d324ff62828559748fbb4d996a8776660e5293c890b38158",
+        "builder": "0x621c9f5b7427E746F497C6688B30A274e0045CCC"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0x715d37230846108a691329879a974311005dc5076716512ca120455e04f06a76",
+        "blockNumber": "54900994",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0x715d37230846108a691329879a974311005dc5076716512ca120455e04f06a76",
+        "contentHash": "0xe155b280ba1dd9849496a7589293f24768c79bca445f9b3ea2175760bfe3bb16",
+        "builder": "0x0797F6D3D86FFC5Df39815086B367ecbDB35F87C"
+      }
+    ],
+    "noWinner": [
+      {
+        "chainId": 5042002,
+        "hash": "0x8f3bd833f0573ff261511f5e0feaf6846a328d4833e57da8fe483ee5610a0826",
+        "blockNumber": "54900983",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0x8f3bd833f0573ff261511f5e0feaf6846a328d4833e57da8fe483ee5610a0826",
+        "contentHash": "0x1245abd45b6136b7fb8b201fbbef4a542d116eaf6e63eb01a28dc5a167a9aa33",
+        "builder": "0xF601Fbf9F28CC12794044DBE481A692957Dde832"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0x5303743a09b342b7c5d868e812ac49f8722335fa9a5f34cd6de21093679bccb2",
+        "blockNumber": "54900990",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0x5303743a09b342b7c5d868e812ac49f8722335fa9a5f34cd6de21093679bccb2",
+        "contentHash": "0xa80f59780e8de656d324ff62828559748fbb4d996a8776660e5293c890b38158",
+        "builder": "0x621c9f5b7427E746F497C6688B30A274e0045CCC"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0xa9184396734700d051e3ded78b65102b7a70f9c5d0166e842b76dde31f5f7bab",
+        "blockNumber": "54901004",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0xa9184396734700d051e3ded78b65102b7a70f9c5d0166e842b76dde31f5f7bab",
+        "contentHash": "0xe155b280ba1dd9849496a7589293f24768c79bca445f9b3ea2175760bfe3bb16",
+        "builder": "0x0797F6D3D86FFC5Df39815086B367ecbDB35F87C"
+      }
+    ]
+  },
+  "evaluations": {
+    "winner": [
+      {
+        "chainId": 5042002,
+        "hash": "0xc74dbf92a1b2a3401e8ecdf1b34f9045fc02dd93bac3fb8f75bba588a700b2fb",
+        "blockNumber": "54902446",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0xc74dbf92a1b2a3401e8ecdf1b34f9045fc02dd93bac3fb8f75bba588a700b2fb"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0xe719d247349589d41ec05adf5808e0344489d5de4debbfacb0cee992c1069fd1",
+        "blockNumber": "54902450",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0xe719d247349589d41ec05adf5808e0344489d5de4debbfacb0cee992c1069fd1"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0x250e28d05ea58dcfc71f39cf8b49827bd838306bdaa7b0580fef19796b746066",
+        "blockNumber": "54902453",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0x250e28d05ea58dcfc71f39cf8b49827bd838306bdaa7b0580fef19796b746066"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0x6296b9419c62ec61ae184588b76e59fc3130f654d490b469e6e2d94f41305691",
+        "blockNumber": "54902456",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0x6296b9419c62ec61ae184588b76e59fc3130f654d490b469e6e2d94f41305691"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0x4e6363e7ac149386f2d5720ba26af2272c3f02e44beee885ee0175c566a34bbf",
+        "blockNumber": "54902465",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0x4e6363e7ac149386f2d5720ba26af2272c3f02e44beee885ee0175c566a34bbf"
+      }
+    ],
+    "noWinner": [
+      {
+        "chainId": 5042002,
+        "hash": "0x81b863e4010de07156a9a7a3f501779c6612605333aeaf92b4f9e60cca87d24a",
+        "blockNumber": "54902473",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0x81b863e4010de07156a9a7a3f501779c6612605333aeaf92b4f9e60cca87d24a"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0x299b432948bede2623b48b39d595906fd13d3c4d512e6eb54a06f8ad7d309f2c",
+        "blockNumber": "54902483",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0x299b432948bede2623b48b39d595906fd13d3c4d512e6eb54a06f8ad7d309f2c"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0xcd1bfa360463f1ee7d4274429faf8189af5a5cc9bd35a950aa52c1595a4d7005",
+        "blockNumber": "54902486",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0xcd1bfa360463f1ee7d4274429faf8189af5a5cc9bd35a950aa52c1595a4d7005"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0x6695f6e35c871e7840810577f7be2f9ce6ad280eb3688b919ae8a86808d0b9b5",
+        "blockNumber": "54902489",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0x6695f6e35c871e7840810577f7be2f9ce6ad280eb3688b919ae8a86808d0b9b5"
+      },
+      {
+        "chainId": 5042002,
+        "hash": "0xa78fb94a12dd49356ec5d88e55e17bdee8e86f242dd3a21e72fa37d622fe04fe",
+        "blockNumber": "54902492",
+        "status": "success",
+        "explorerUrl": "https://testnet.arcscan.app/tx/0xa78fb94a12dd49356ec5d88e55e17bdee8e86f242dd3a21e72fa37d622fe04fe"
+      }
+    ]
+  },
+  "settlements": {
+    "winner": {
+      "transactionHash": "0x1ecbdd4ebe4819e187f6928ac7474d8c03406bc2840a8175c1293346bf2d6906",
+      "explorerUrl": "https://testnet.arcscan.app/tx/0x1ecbdd4ebe4819e187f6928ac7474d8c03406bc2840a8175c1293346bf2d6906",
+      "blockNumber": "54902495",
+      "state": 4,
+      "events": [
+        {
+          "name": "WinnerSelected",
+          "args": {
+            "submissionId": "1",
+            "builder": "0xF601Fbf9F28CC12794044DBE481A692957Dde832"
+          }
+        },
+        {
+          "name": "PayoutRecorded",
+          "args": {
+            "recipient": "0xF601Fbf9F28CC12794044DBE481A692957Dde832",
+            "submissionId": "1",
+            "amount": "4750000"
+          }
+        },
+        {
+          "name": "PayoutRecorded",
+          "args": {
+            "recipient": "0x621c9f5b7427E746F497C6688B30A274e0045CCC",
+            "submissionId": "2",
+            "amount": "125000"
+          }
+        },
+        {
+          "name": "PayoutRecorded",
+          "args": {
+            "recipient": "0x0797F6D3D86FFC5Df39815086B367ecbDB35F87C",
+            "submissionId": "3",
+            "amount": "125000"
+          }
+        },
+        {
+          "name": "WinnerSettled",
+          "args": {
+            "winnerSubmissionId": "1",
+            "winner": "0xF601Fbf9F28CC12794044DBE481A692957Dde832",
+            "winnerAmount": "4750000",
+            "finalistAmount": "250000"
+          }
+        }
+      ],
+      "payouts": [
+        {
+          "recipient": "0xF601Fbf9F28CC12794044DBE481A692957Dde832",
+          "amountAtomic": "4750000",
+          "amountUsdc": "4.75",
+          "submissionId": "1"
+        },
+        {
+          "recipient": "0x621c9f5b7427E746F497C6688B30A274e0045CCC",
+          "amountAtomic": "125000",
+          "amountUsdc": "0.125",
+          "submissionId": "2"
+        },
+        {
+          "recipient": "0x0797F6D3D86FFC5Df39815086B367ecbDB35F87C",
+          "amountAtomic": "125000",
+          "amountUsdc": "0.125",
+          "submissionId": "3"
+        }
+      ]
+    },
+    "noWinner": {
+      "transactionHash": "0x5a00874bacb95b830d43738c67cd5722707d3f152c6d39b9a71e32c5d34c68a5",
+      "explorerUrl": "https://testnet.arcscan.app/tx/0x5a00874bacb95b830d43738c67cd5722707d3f152c6d39b9a71e32c5d34c68a5",
+      "blockNumber": "54902504",
+      "state": 5,
+      "events": [
+        {
+          "name": "PayoutRecorded",
+          "args": {
+            "recipient": "0xF601Fbf9F28CC12794044DBE481A692957Dde832",
+            "submissionId": "1",
+            "amount": "750000"
+          }
+        },
+        {
+          "name": "PayoutRecorded",
+          "args": {
+            "recipient": "0x621c9f5b7427E746F497C6688B30A274e0045CCC",
+            "submissionId": "2",
+            "amount": "500000"
+          }
+        },
+        {
+          "name": "PayoutRecorded",
+          "args": {
+            "recipient": "0x0797F6D3D86FFC5Df39815086B367ecbDB35F87C",
+            "submissionId": "3",
+            "amount": "250000"
+          }
+        },
+        {
+          "name": "PayoutRecorded",
+          "args": {
+            "recipient": "0x0118c54a58F86B2C11e9A8c4a744956974c134CC",
+            "submissionId": "0",
+            "amount": "3500000"
+          }
+        },
+        {
+          "name": "ClientRefunded",
+          "args": {
+            "client": "0x0118c54a58F86B2C11e9A8c4a744956974c134CC",
+            "amount": "3500000"
+          }
+        },
+        {
+          "name": "NoWinnerSettled",
+          "args": {
+            "clientRefund": "3500000",
+            "effortProtectionPaid": "1500000",
+            "finalistCount": 3
+          }
+        }
+      ],
+      "payouts": [
+        {
+          "recipient": "0xF601Fbf9F28CC12794044DBE481A692957Dde832",
+          "amountAtomic": "750000",
+          "amountUsdc": "0.75",
+          "submissionId": "1"
+        },
+        {
+          "recipient": "0x621c9f5b7427E746F497C6688B30A274e0045CCC",
+          "amountAtomic": "500000",
+          "amountUsdc": "0.5",
+          "submissionId": "2"
+        },
+        {
+          "recipient": "0x0797F6D3D86FFC5Df39815086B367ecbDB35F87C",
+          "amountAtomic": "250000",
+          "amountUsdc": "0.25",
+          "submissionId": "3"
+        },
+        {
+          "recipient": "0x0118c54a58F86B2C11e9A8c4a744956974c134CC",
+          "amountAtomic": "3500000",
+          "amountUsdc": "3.5",
+          "submissionId": "0"
+        }
+      ]
+    }
+  }
+}

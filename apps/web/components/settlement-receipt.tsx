@@ -11,7 +11,7 @@ export function SettlementReceipt({ settlement }: { settlement: SettlementSummar
         <div className="receipt__mark">
           <Check size={22} />
         </div>
-        <h1>{isWinner ? "Winner payout preview" : "Effort protected"}</h1>
+        <h2>{isWinner ? "Winner payout preview" : "Effort protected"}</h2>
         <p>
           {isWinner
             ? "95% to the selected result. The finalist pool recognizes other qualified work."

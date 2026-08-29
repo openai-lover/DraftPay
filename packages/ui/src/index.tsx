@@ -3,7 +3,7 @@ import type { HTMLAttributes, ReactNode } from "react";
 export function EvidenceBadge({ mode }: { mode: "fixture" | "real" }) {
   return (
     <span className={`evidence-badge evidence-badge--${mode}`}>
-      {mode === "real" ? "Verified onchain" : "Seeded demo"}
+      {mode === "real" ? "Verified onchain" : "Fixture data"}
     </span>
   );
 }

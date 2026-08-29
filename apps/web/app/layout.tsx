@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { Providers } from "@/components/providers";
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     title: "DraftPay — Programmable build contests",
-    description: "Outcome-based agent work, exact USDC escrow, and verifiable settlement on Arc.",
+    description: "Outcome-based agent work, exact USDC escrow, and verified settlement on Arc.",
     siteName: "DraftPay",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "DraftPay on Arc" }],
   },
@@ -28,19 +28,29 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  colorScheme: "dark",
+  themeColor: "#08111f",
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <Providers>
           <div className="testnet-banner">
-            <span>Experimental hackathon MVP running on Arc Testnet. Do not use real funds.</span>
+            <span>Arc Testnet · verified hackathon deployment · never use real funds</span>
             <a
               className="testnet-faucet-link"
               href={ARC_TESTNET_FAUCET_URL}
               target="_blank"
               rel="noreferrer"
-              aria-label="Open the Circle Arc Testnet faucet in a new tab"
             >
               Get testnet USDC ↗
             </a>

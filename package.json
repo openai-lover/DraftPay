@@ -30,6 +30,17 @@
     "demo:seed": "tsx scripts/demo-data.ts seed",
     "demo:reset": "tsx scripts/demo-data.ts reset",
     "demo:run": "tsx scripts/demo-runner.ts",
+    "wallets:provision:testnet": "tsx scripts/provision-test-wallets.ts",
+    "arc:check": "tsx scripts/deploy-arc-testnet.ts --check",
+    "arc:deploy:factory": "tsx scripts/deploy-arc-testnet.ts",
+    "arc:create:contests": "tsx scripts/deploy-arc-testnet.ts --contests",
+    "arc:settle:no-winner": "tsx scripts/settle-no-winner-arc-testnet.ts",
+    "arc:audit:wallets": "tsx scripts/audit-arc-wallets.ts",
+    "arc:final:prepare": "tsx scripts/finalize-arc-testnet.ts prepare",
+    "arc:final:settle": "tsx scripts/finalize-arc-testnet.ts settle",
+    "demo:record": "tsx scripts/record-demo-video.ts",
+    "gateway:check": "pnpm --filter @draftpay/agent gateway:check",
+    "gateway:deposit": "pnpm --filter @draftpay/agent gateway:deposit",
     "clean": "pnpm -r --if-present clean"
   },
   "devDependencies": {

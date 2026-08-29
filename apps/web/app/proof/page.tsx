@@ -28,9 +28,9 @@ export const metadata: Metadata = {
 
 const qualityGates = [
   { value: "28", label: "Solidity tests", detail: "fuzz, reentrancy, high-severity lint" },
-  { value: "31", label: "Agent unit tests", detail: "decisions, budgets, artifacts" },
-  { value: "5", label: "x402 integration tests", detail: "buyer, seller, policy boundary" },
-  { value: "14", label: "Browser journeys", detail: "desktop and mobile" },
+  { value: "34", label: "Agent unit tests", detail: "decisions, budgets, artifacts" },
+  { value: "6", label: "x402 integration tests", detail: "buyer, seller, policy boundary" },
+  { value: "24", label: "Browser journeys", detail: "desktop and mobile" },
 ];
 
 const truthLedger = [
@@ -48,22 +48,24 @@ const truthLedger = [
   },
   {
     capability: "DraftPay factory and contest writes",
-    status: "Signer needed",
-    tone: "amber" as const,
+    status: "Verified onchain",
+    tone: "teal" as const,
     evidence:
-      "Production code paths are wired; an address is shown only after a successful receipt.",
+      "Factory deployment, winner settlement, and no-winner settlement are linked to ArcScan.",
   },
   {
     capability: "Circle Gateway x402 settlement",
-    status: "Integration ready",
-    tone: "blue" as const,
-    evidence: "Buyer/seller adapters are implemented; real mode requires a funded Gateway balance.",
+    status: "Settled",
+    tone: "teal" as const,
+    evidence:
+      "A real 402 quote, signed authorization, paid analysis, and receipt are recorded in the public evidence bundle.",
   },
   {
     capability: "Marketplace contests and activity",
-    status: "Fixture",
+    status: "Mixed evidence",
     tone: "amber" as const,
-    evidence: "Deterministic sample data is visibly labeled and never presented as a transaction.",
+    evidence:
+      "Real settlement records are linked; illustrative marketplace rows remain visibly labeled as fixtures.",
   },
 ];
 
@@ -80,6 +82,9 @@ export default function ProofPage() {
               DraftPay keeps live evidence and deterministic demo evidence visibly separate.
             </p>
             <div className="hero__actions">
+              <a className="button" href="/evidence/final-run.json" target="_blank">
+                Open public evidence <ExternalLink size={15} />
+              </a>
               <Link className="button" href="/contests/saas-launch-01/compare">
                 Inspect the decision UI <ArrowRight size={16} />
               </Link>
@@ -97,8 +102,8 @@ export default function ProofPage() {
             <span>Evidence contract</span>
             <strong>Real means independently verifiable.</strong>
             <p>
-              A Real badge requires a successful Arc receipt or settled Circle payment verified at
-              runtime. Everything else stays explicitly marked Fixture or Pending.
+              A Real badge requires a successful Arc receipt or settled Circle payment that a judge
+              can independently inspect. Illustrative UI remains explicitly marked Fixture.
             </p>
             <div>
               <CheckCircle2 size={16} /> No fabricated hashes, addresses, or payment IDs
@@ -248,8 +253,8 @@ export default function ProofPage() {
               <h2>Exactly what is live—and what is not.</h2>
             </div>
             <p>
-              External credentials and human wallet signatures are treated as deployment boundaries,
-              never filled in with convincing-looking demo values.
+              Live transactions, contract addresses, payment receipts, and fixture-only content use
+              separate labels and separate evidence paths.
             </p>
           </div>
           <div className="truth-ledger">
@@ -269,12 +274,18 @@ export default function ProofPage() {
               Circle x402 reference <ExternalLink size={13} />
             </a>
             <a
-              href={`${GITHUB_REPOSITORY_URL}/blob/codex/demo-data/docs/VERIFICATION.md`}
+              href={`${GITHUB_REPOSITORY_URL}/blob/main/docs/VERIFICATION.md`}
               target="_blank"
               rel="noreferrer"
             >
               Full verification guide <ExternalLink size={13} />
             </a>
+            <Link href="/settlements/winner">
+              Winner settlement <ExternalLink size={13} />
+            </Link>
+            <Link href="/settlements/no-winner">
+              No-winner settlement <ExternalLink size={13} />
+            </Link>
           </div>
         </div>
       </section>
