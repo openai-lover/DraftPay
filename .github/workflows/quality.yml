@@ -27,6 +27,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @draftpay/agent exec playwright install --with-deps chromium
       - run: pnpm quality
 
   contracts:
