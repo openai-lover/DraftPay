@@ -1,12 +1,14 @@
 # DraftPay Judging Map
 
-Last updated: 2026-08-02
+Last updated: 2026-08-30
 
 Evidence status: the public app, public x402 seller, real paid agent build, content-addressed artifact, six Arc submissions, evaluator writes, winner payout, finalist-bearing no-winner payout, and zero-qualified refund branch have all been executed. Fixture evidence remains structurally labeled and is not substituted for a transaction.
 
 ## Public judge entry points
 
 - App: <https://draft-pay-web.vercel.app>
+- Judge Proof Room: <https://draft-pay-web.vercel.app/proof>
+- Live Arc health proof: <https://draft-pay-web.vercel.app/api/health>
 - x402 seller health: <https://draft-pay-x402-service.vercel.app/health>
 - Complete machine-readable execution: <https://draft-pay-web.vercel.app/evidence/final-run.json>
 - Real generated artifact: <https://draft-pay-web.vercel.app/evidence/artifacts/1245abd45b6136b7fb8b201fbbef4a542d116eaf6e63eb01a28dc5a167a9aa33.html>
@@ -32,6 +34,7 @@ The evidence JSON is the canonical index for every submission, evaluation, payou
 | Zero-qualified refund | Full prize returns when nobody qualifies                                                                | Earlier successful five-USDC refund transaction                                            | Separate real terminal branch                           |
 | Conservation          | Atomic integer math; bounded three-recipient payout set                                                 | Onchain payout arrays plus Foundry fuzz tests                                              | Not formally verified                                   |
 | Public deployment     | Next.js app and Node x402 service deployed separately                                                   | Both URLs load without authentication                                                      | Hobby/Testnet deployment                                |
+| Public verification   | Live Arc RPC, USDC, and Circle Gateway checks plus a claim-to-code guide                                | Proof Room, JSON health endpoint, CI, and ArcScan evidence                                 | Read-only health does not replace transaction receipts  |
 
 ## Exact live run
 
@@ -50,8 +53,8 @@ The evidence JSON is the canonical index for every submission, evaluation, payou
 ## Local verification snapshot
 
 - Foundry: 28 passing contract tests, including winner/no-winner conservation fuzz runs and finalist-cap boundaries.
-- TypeScript unit/integration: 61 passing tests across shared, agent, web, and x402 service packages.
-- Playwright: 10 passing desktop/mobile journeys, including the final live-proof timeline.
+- TypeScript unit/integration: 79 passing tests across shared, agent, web, and x402 service packages.
+- Playwright: 24 passing desktop/mobile journeys, including the final live-proof timeline, wallet chooser, and Proof Room.
 - Strict TypeScript, ESLint, Prettier, Solidity formatting, contract build, and Next.js production build pass in the final repository state.
 
 Run the current suite rather than trusting prose:

@@ -1,6 +1,6 @@
 # Known Limitations and Manual Steps
 
-Last updated: 2026-08-02
+Last updated: 2026-08-30
 
 ## Final submission actions still required
 
@@ -35,7 +35,8 @@ Completed on Arc Testnet: dedicated low-balance wallets, factory deployment, rea
 - Seeded settlement receipts are payout previews, not transactions.
 - Real receipt UI requires a valid transaction hash and contest address, then validates the Arc receipt before showing a Real badge.
 - The public evidence JSON and landing timeline link the real x402 receipt, content-addressed artifact, submission, evaluation, winner settlement, and finalist-bearing no-winner settlement. Secondary prepared finalists remain labeled fixture in artifact metadata.
+- The Proof Room's live health panel proves current Arc RPC access and expected contract bytecode; it does not by itself prove DraftPay writes. Factory, submission, evaluation, and settlement writes are separately linked through the public evidence bundle and ArcScan.
 
 ## Browser verification
 
-The desktop/mobile create, winner, no-winner, and mobile-overflow Playwright journeys pass locally. Chromium must be installed in a fresh environment before running `pnpm test:e2e`.
+All 24 desktop/mobile create, wallet, Proof Room, winner, no-winner, accessibility, and mobile-overflow Playwright journeys pass locally. Chromium must be installed in a fresh environment before running `pnpm test:e2e`.

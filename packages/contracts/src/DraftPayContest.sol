@@ -187,11 +187,13 @@ contract DraftPayContest {
         );
     }
 
-    function fund() external onlyClient nonReentrant {
+    function fund() external nonReentrant onlyClient {
         _requireState(State.Created);
 
         uint256 balanceBefore = usdc.balanceOf(address(this));
         state = State.SubmissionOpen;
+        // onlyClient guarantees that the authorized token owner is the current caller.
+        // forge-lint: disable-next-line(arbitrary-send-erc20)
         usdc.safeTransferFrom(client, address(this), prizeAmount);
         uint256 received = usdc.balanceOf(address(this)) - balanceBefore;
         if (received != prizeAmount) revert InvalidFundingAmount(prizeAmount, received);
@@ -298,7 +300,7 @@ contract DraftPayContest {
         emit FinalistsRanked(rankedFinalists, finalistCount, rankingEvidenceHash);
     }
 
-    function selectWinner(uint256 submissionId) external onlyClient nonReentrant {
+    function selectWinner(uint256 submissionId) external nonReentrant onlyClient {
         _requireState(State.AwaitingSelection);
         if (block.timestamp > selectionDeadline) revert SelectionWindowClosed();
         Submission storage selected = submissions[submissionId];

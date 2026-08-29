@@ -5,6 +5,7 @@
   "scripts": {
     "build": "forge build --sizes",
     "test": "forge test -vv",
+    "lint:security": "forge lint --severity high",
     "fmt": "forge fmt",
     "fmt:check": "forge fmt --check",
     "deploy:arc": "forge script script/DeployArc.s.sol:DeployArc --rpc-url arc_testnet --account draftpay-deployer --broadcast --verify",

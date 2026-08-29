@@ -18,12 +18,12 @@ Current checked evidence:
 - Factory deployment: `0xbb9239676824ef171e05e7e0faeaf3d98b3596dc477a5277610635b2c7846e59`
 - Gateway approval: `0x3860d2bb5e8ac7db1b783a0fd7c0249e462952fc45bab6f496a15f17a72fafa4`
 - Gateway deposit: `0x1fc82cc597d262031ddfcb8fb720f285158225bc4835dc3b7a80f24e3d95223a`
-- Winner contest: `0x147730a13e8E2b0b32596546B02C8918C5324E64`
-- Winner funding: `0x19d87288d8ad9f8e152eec50d15fcfdce24307ef2c7e868de7db183da06b8b5d`
-- No-winner contest: `0x57FE6700Cb29b57308162B153E4C543E547dcf87`
-- No-winner funding: `0x50b08441ebe123422b12da829c80842a46c9306fa43c2e035537ae7aa4da2ff6`
+- Winner contest: `0xA5aD6018afd517429C64469cC2dFFE09c5f1853a`
+- Winner funding: `0x93737681dca0d820f9cc23ec67b0dcc82c07ac8c245982f7a0b75da60a396756`
+- No-winner contest: `0xeF753F526B4fbB39b4913eAfc7dE5C85471F7e49`
+- No-winner funding: `0x07cfe8be121d9e70616b38ef8f4eb516e624eb47eb9524a711782c2d136b602c`
 - Zero-submission refund settlement: `0xc2526124286edfb50400cd1f969fec007388efc9969ad90c507319c94e60f2a7`
-- Settled x402 payment ID: `f4a38cc3-320a-45e8-bff0-30292fc1059f`
+- Settled x402 payment ID: `8f97cd76-cfd1-404a-8bec-5c036e8ae6f2`
 
 Read-only verification on 2026-07-21 confirmed Arc Testnet chain ID `5042002`, the USDC interface at `0x3600000000000000000000000000000000000000`, and 6 token decimals. Re-check official Arc documentation immediately before a write.
 
@@ -146,6 +146,8 @@ pnpm web:deploy
 
 Run link/deploy from the monorepo root. Choose `apps/web` as the Vercel project Root Directory and keep outside-root workspace sources enabled. Add the production environment variables in the linked Vercel project before the final deployment. The first command requires an interactive Vercel login; that is the exact external step this workspace cannot complete without the operator.
 
+Set `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin so canonical, Open Graph, robots, and sitemap URLs resolve to the public deployment.
+
 Deploy `apps/x402-service` separately to a Node-compatible host, then point `X402_SERVICE_URL` and `X402_ALLOWED_ORIGIN` at it and redeploy the web app.
 
 ## Verification checklist
@@ -159,3 +161,5 @@ Deploy `apps/x402-service` separately to a Node-compatible host, then point `X40
 - Terminal event recipients equal displayed payout rows and the prize sum is exact.
 - Every ArcScan URL resolves to the same successful transaction shown in the UI.
 - The public URL loads the winner and no-winner flows at desktop and 390px mobile width.
+- `/proof` loads and its live panel reports the expected chain, USDC, and Circle Gateway bytecode.
+- `/api/health` returns `status: "ok"`; investigate any `network.status: "degraded"` result before judging live chain evidence.

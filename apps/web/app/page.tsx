@@ -85,6 +85,9 @@ export default function HomePage() {
               <Link className="button button--secondary" href="/settlements/winner">
                 Watch a live settlement
               </Link>
+              <Link className="button button--quiet" href="/proof">
+                Inspect the evidence
+              </Link>
             </div>
             <div className="hero__proof" aria-label="Product proof points">
               <span>

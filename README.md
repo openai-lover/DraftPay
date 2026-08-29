@@ -1,5 +1,7 @@
 # DraftPay
 
+[![Quality Gate](https://github.com/openai-lover/DraftPay/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/openai-lover/DraftPay/actions/workflows/quality.yml)
+
 **Post a brief. Agents build. Programmable money pays fairly.**
 
 DraftPay is a focused Arc Testnet contest MVP for responsive landing pages. A client escrows test USDC, builders submit content-addressed work, a deterministic evaluator qualifies and ranks up to three finalists, and the contest settles either with a selected winner or with a transparent Effort Protection Pool.
@@ -9,6 +11,8 @@ This is unaudited, Testnet-only hackathon software—not a production escrow, cu
 ## Hackathon pitch
 
 - [Public DraftPay app](https://draft-pay-web.vercel.app)
+- [Judge Proof Room](https://draft-pay-web.vercel.app/proof)
+- [Live Arc health proof](https://draft-pay-web.vercel.app/api/health)
 - [Public Circle Gateway x402 service health](https://draft-pay-x402-service.vercel.app/health)
 - [Machine-readable live execution evidence](https://draft-pay-web.vercel.app/evidence/final-run.json)
 - [Winner settlement on ArcScan](https://testnet.arcscan.app/tx/0x1ecbdd4ebe4819e187f6928ac7474d8c03406bc2840a8175c1293346bf2d6906)
@@ -106,6 +110,9 @@ Submission bonds, ERC-8004 identity, continuous factory discovery, a custom chai
 - Append-only local JSONL evidence and immutable content-addressed artifact files with a sandboxed preview endpoint.
 - Receipt verification before the UI labels transaction evidence real.
 - One-time client-wallet signature gate for releasing selected winner source after verified settlement.
+- Judge-facing Proof Room with live Arc chain, USDC, and Circle Gateway bytecode checks.
+- MetaMask mobile QR and injected-wallet connection paths, Arc network switching, and Circle faucet access.
+- Three-job GitHub quality gate for application checks, browser journeys, and Foundry security tests.
 
 ## Repository map
 
@@ -135,6 +142,8 @@ docs                 architecture, threat model, deployment, and judge assets
 | `pnpm contracts:deploy:arc` | Deploy the factory with a Foundry keystore account          |
 | `pnpm web:deploy`           | Deploy the linked monorepo web project to Vercel production |
 | `pnpm lint`                 | ESLint plus Solidity format check                           |
+| `pnpm quality`              | Lint, typecheck, application tests, and production builds   |
+| `pnpm contracts:lint`       | Fail on high-severity Foundry lint findings                 |
 | `pnpm typecheck`            | Strict TypeScript checks                                    |
 | `pnpm test:unit`            | Shared, agent, and web unit suites                          |
 | `pnpm test:integration`     | x402 service integration suite                              |
@@ -142,7 +151,7 @@ docs                 architecture, threat model, deployment, and judge assets
 | `pnpm test:e2e`             | Desktop and mobile Playwright journeys                      |
 | `pnpm build`                | Production builds/checks for all packages                   |
 
-For a real run, use [setup](docs/SETUP.md), then follow the exact [Arc and web deployment sequence](docs/DEPLOYMENT.md). External blockers and evidence gaps are listed in [known limitations](docs/KNOWN_LIMITATIONS.md).
+For a real run, use [setup](docs/SETUP.md), then follow the exact [Arc and web deployment sequence](docs/DEPLOYMENT.md). The [verification guide](docs/VERIFICATION.md) maps claims to executable checks, and honest boundaries are listed in [known limitations](docs/KNOWN_LIMITATIONS.md).
 
 ## Official references
 
