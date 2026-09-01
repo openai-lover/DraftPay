@@ -85,11 +85,11 @@ export default function ProofPage() {
               <a className="button" href="/evidence/final-run.json" target="_blank">
                 Open public evidence <ExternalLink size={15} />
               </a>
-              <Link className="button" href="/contests/saas-launch-01/compare">
+              <Link className="button button--secondary" href="/contests/saas-launch-01/compare">
                 Inspect the decision UI <ArrowRight size={16} />
               </Link>
               <a
-                className="button button--secondary"
+                className="button button--quiet"
                 href={GITHUB_REPOSITORY_URL}
                 target="_blank"
                 rel="noreferrer"

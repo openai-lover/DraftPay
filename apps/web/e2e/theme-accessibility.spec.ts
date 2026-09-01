@@ -17,7 +17,7 @@ test("low-glare theme keeps mobile navigation reachable", async ({ page }) => {
       document.documentElement.scrollWidth > document.documentElement.clientWidth,
   }));
 
-  expect(shell.background).toBe("rgb(8, 17, 31)");
+  expect(shell.background).toBe("rgb(48, 50, 54)");
   expect(shell.colorScheme).toBe("dark");
   expect(shell.hasHorizontalOverflow).toBe(false);
 });
