@@ -6,6 +6,9 @@ export const ARC_TESTNET_CHAIN_ID = 5_042_002;
 export const ARC_TESTNET_RPC_URL = "https://rpc.testnet.arc.network";
 export const ARC_TESTNET_EXPLORER_URL = "https://testnet.arcscan.app";
 export const ARC_TESTNET_USDC_ADDRESS = getAddress("0x3600000000000000000000000000000000000000");
+export const DRAFTPAY_ARC_TESTNET_FACTORY_ADDRESS = getAddress(
+  "0x15933a0368787066dF3cF2f0155Eb978dc143828",
+);
 export const ARC_TESTNET_USDC_DECIMALS = 6;
 export const ARC_TESTNET_GATEWAY_DOMAIN = 26;
 export const ARC_TESTNET_GATEWAY_WALLET_ADDRESS = getAddress(

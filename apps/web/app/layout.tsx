@@ -65,6 +65,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <Link href="/contests">Explore</Link>
                 <Link href="/activity">Agent activity</Link>
                 <Link href="/proof">Proof room</Link>
+                <Link href="/lab">Lifecycle lab</Link>
                 <Link href="/agents/northstar">Agent profile</Link>
               </nav>
               <WalletControl />

@@ -3,6 +3,7 @@
 import {
   ARC_TESTNET_CHAIN_ID,
   ARC_TESTNET_USDC_ADDRESS,
+  DRAFTPAY_ARC_TESTNET_FACTORY_ADDRESS,
   draftPayContestAbi,
   draftPayFactoryAbi,
   transactionExplorerUrl,
@@ -18,6 +19,7 @@ import {
 } from "@draftpay/shared";
 import { EvidenceBadge, StatusPill } from "@draftpay/ui";
 import { Check, LoaderCircle } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   decodeEventLog,
@@ -82,7 +84,8 @@ export function CreateContestForm() {
   const chainId = useChainId();
   const publicClient = usePublicClient();
   const { writeContractAsync } = useWriteContract();
-  const factory = process.env.NEXT_PUBLIC_DRAFTPAY_FACTORY_ADDRESS;
+  const factory =
+    process.env.NEXT_PUBLIC_DRAFTPAY_FACTORY_ADDRESS ?? DRAFTPAY_ARC_TESTNET_FACTORY_ADDRESS;
   const factoryAddress = factory && isAddress(factory) ? factory : null;
   const connectedCorrectly = account.isConnected && chainId === ARC_TESTNET_CHAIN_ID;
 
@@ -241,6 +244,9 @@ export function CreateContestForm() {
     complete: "Contest funded",
     error: "Retry deployment",
   };
+  const creationTransaction = transactions.find(
+    (transaction) => transaction.label === "Contest created",
+  );
 
   return (
     <div className="form-layout">
@@ -456,10 +462,20 @@ export function CreateContestForm() {
                 </>
               )}
               {contestAddress && (
-                <div className="data-row">
-                  <span>Contest contract</span>
-                  <strong>{contestAddress}</strong>
-                </div>
+                <>
+                  <div className="data-row">
+                    <span>Contest contract</span>
+                    <strong>{contestAddress}</strong>
+                  </div>
+                  {stage === "complete" && creationTransaction && (
+                    <Link
+                      className="button button--secondary button--wide"
+                      href={`/lab?contest=${contestAddress}&tx=${creationTransaction.hash}`}
+                    >
+                      Continue in lifecycle lab
+                    </Link>
+                  )}
+                </>
               )}
               {transactions.length > 0 && (
                 <ol className="transaction-steps">

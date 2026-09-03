@@ -2478,6 +2478,75 @@ summary:focus-visible {
     monospace;
 }
 
+.lifecycle-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(330px, 0.55fr);
+  gap: 48px;
+  padding-bottom: 96px;
+}
+.lifecycle-main {
+  display: grid;
+  gap: 16px;
+}
+.lifecycle-sidebar {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+.lifecycle-sidebar > .side-panel:first-child {
+  position: sticky;
+  top: 112px;
+}
+.lifecycle-card {
+  display: grid;
+  gap: 18px;
+  border: 1px solid var(--line-dark);
+  border-radius: 12px;
+  background: var(--paper-strong);
+  padding: 22px;
+}
+.lifecycle-card--address {
+  background: linear-gradient(135deg, rgba(65, 116, 255, 0.1), var(--paper-strong) 52%);
+}
+.lifecycle-card__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+}
+.lifecycle-card__head h2 {
+  margin: 4px 0 0;
+  font-size: 19px;
+}
+.lifecycle-card select {
+  min-height: 46px;
+  width: 100%;
+  border: 1px solid var(--line-dark);
+  border-radius: 10px;
+  background: var(--paper-strong);
+  color: var(--ink);
+  padding: 12px 13px;
+}
+.lifecycle-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.lifecycle-explorer-link {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 5px;
+}
+.lifecycle-proof-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.lifecycle-receipts {
+  margin-top: 0;
+}
+
 .profile-grid {
   display: grid;
   grid-template-columns: minmax(280px, 0.5fr) minmax(0, 1fr);
@@ -3030,6 +3099,7 @@ summary:focus-visible {
   .detail-grid,
   .activity-layout,
   .form-layout,
+  .lifecycle-layout,
   .profile-grid {
     grid-template-columns: 1fr;
   }
@@ -3056,7 +3126,8 @@ summary:focus-visible {
     aspect-ratio: 1.7;
   }
   .side-panel,
-  .spec-panel {
+  .spec-panel,
+  .lifecycle-sidebar > .side-panel:first-child {
     position: static;
   }
   .contest-row {

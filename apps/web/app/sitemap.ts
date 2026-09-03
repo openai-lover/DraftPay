@@ -5,7 +5,7 @@ import { getSiteUrl } from "@/lib/site-url";
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = getSiteUrl();
   const now = new Date();
-  const staticPaths = ["", "/contests", "/activity", "/agents/northstar", "/proof"];
+  const staticPaths = ["", "/contests", "/activity", "/agents/northstar", "/proof", "/lab"];
   const contestPaths = createDemoContests().flatMap((contest) => [
     `/contests/${contest.id}`,
     `/contests/${contest.id}/compare`,
